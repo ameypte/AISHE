@@ -68,3 +68,37 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Server
+
+I have uses python flask server to serve the data to the react app. The server is running on port 5000. The server is running on localhost. The server is running on the same machine as the react app.
+
+### Installation
+
+To install the server, you need to have python installed on your machine. You can download python from [here](https://www.python.org/downloads/). After installing python, you need to install the flask library. You can install flask by running the following command in your terminal.
+
+pip install flask
+
+### Running the server
+
+To run the server, you need to navigate to the server folder. You can do that by running the following command in your terminal.
+
+cd server
+
+Then you need to to create a virtual environment. You can do that by running the following command in your terminal.
+
+python -m venv venv
+
+Then you need to activate the virtual environment. You can do that by running the following command in your terminal.
+
+venv\Scripts\activate
+
+Then you need to install the required libraries. You can do that by running the following command in your terminal.
+
+pip install -r requirements.txt
+
+Then you need to run the server. You can do that by running the following command in your terminal.
+
+python server.py
+
+I hope this project will help you to learn how to create a react app with a flask server. If you have any questions, please feel free to ask me. I will be happy to help you.
