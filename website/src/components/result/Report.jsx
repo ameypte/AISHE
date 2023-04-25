@@ -97,14 +97,37 @@ export default function Report() {
     const [checkedState, setCheckedState] = useState(
         new Array(cols.length).fill(false)
     );
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedProgram, setSelectedProgram] = useState("IF");
+    const [student, setStudent] = useState("");
 
     const columns = Array.from(
         new Set(data.flatMap((item) => Object.keys(item)))
     );
 
-    const handelGenerate = (e) => {
+    const handelGenerate = async (e) => {
         e.preventDefault();
-        alert("Generate");
+        setIsLoading(true);
+        const requestDate = {
+            program_char_code: selectedProgram,
+            studentId: student,
+        };
+        try {
+            const response = await fetch("http://localhost:5000/resultreport", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestDate),
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            setData(responseData);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleCheckboxChange = (position) => {
@@ -139,6 +162,7 @@ export default function Report() {
                         name="progChar"
                         id="programCharCode"
                         className="form-select"
+                        onChange={(e) => setSelectedProgram(e.target.value)}
                     >
                         {progCharCodes.map((code) => (
                             <option key={code} value={code}>
@@ -160,7 +184,23 @@ export default function Report() {
                     />
                 </div>
                 <div className="form-group mb-3 col-lg-4 d-flex align-items-end">
-                    <button className="btn btn-danger">Generate</button>
+                    {isLoading ? (
+                        <button className="btn btn-danger" disabled>
+                            <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                                aria-hidden="true"
+                            ></span>
+                            Generating...
+                        </button>
+                    ) : (
+                        <button
+                            className="btn btn-danger"
+                            onClickCapture={handelGenerate}
+                        >
+                            Generate
+                        </button>
+                    )}
                 </div>
 
                 <div className="col-12">
@@ -208,33 +248,43 @@ export default function Report() {
                 </div>
             </form>
             <hr />
-            <h3 className="mb-3">Generated Report</h3>
-            <div className="container">
-                <table className="table table-bordered table-striped rounded ">
-                    <thead>
-                        <tr className="text-center">
-                            {columns.map((col) => (
-                                <th key={col}>{col}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item) => (
-                            <tr key={item.id}>
+            <h3 className="mb-3">
+                <div className="row">
+                    <div className="col">Generated Report</div>
+                    <div className="col text-end">
+                        <button
+                            className="btn mx-3 btn-success"
+                            onClick={handleDownload}
+                        >
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </h3>
+            <div
+                className="container"
+            >
+                <div className="table-responsive"  style={{ maxHeight: "500px", overflowX: "auto" }}>
+                    <table
+                        className="table table-bordered table-striped rounded"
+                    >
+                        <thead>
+                            <tr className="text-center">
                                 {columns.map((col) => (
-                                    <td key={col}>{item[col]}</td>
+                                    <th key={col}>{col}</th>
                                 ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <div className="text-end">
-                    <button
-                        className="btn btn-success"
-                        onClick={handleDownload}
-                    >
-                        Download
-                    </button>
+                        </thead>
+                        <tbody>
+                            {data.map((item) => (
+                                <tr key={item.id}>
+                                    {columns.map((col) => (
+                                        <td key={col}>{item[col]}</td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </>

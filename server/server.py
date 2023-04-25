@@ -62,6 +62,44 @@ def upload():
         return jsonify({'message': error_message}), 500
 
 
+@app.route('/resultreport', methods=['POST'])
+# this function will return the data according to the program_char_code
+def report():
+    try:
+        program_char_code = request.json['program_char_code']
+        # return all the columns for the given program_char_code
+        ref = db.reference('Result information')
+        data = ref.get()
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+        if program_char_code not in data:
+            return jsonify({'message': 'No data found'}), 404
+
+        result = []
+        for reg_no in data[program_char_code]:
+            if reg_no == 'program_id' or reg_no == 'program_name':
+                continue
+            else:
+                for subject_code in data[program_char_code][reg_no]['subjects']:
+                    row = {}
+                    row['program_char_code'] = program_char_code
+                    row['program_id'] = data[program_char_code]['program_id']
+                    row['program_name'] = data[program_char_code]['program_name']
+                    row['reg_no'] = reg_no
+                    row['result_master_id'] = data[program_char_code][reg_no]['result_master_id']
+                    row['student_id'] = data[program_char_code][reg_no]['student_id']
+                    row['subject_code'] = subject_code
+                    for subject in data[program_char_code][reg_no]['subjects'][subject_code]:
+                        row[subject] = data[program_char_code][reg_no]['subjects'][subject_code][subject]
+                    result.append(row)
+
+        return jsonify(result)
+
+    except Exception as e:
+        error_message = f'Error: {str(e)}'
+        return jsonify({'message': error_message}), 500
+
+
 @app.route('/clearresult')
 def clear():
     ref = db.reference('Result information')

@@ -36,7 +36,7 @@ export default function Upload() {
             console.log(data.message);
             setResponseMessage(data.message);
         } catch (error) {
-            console.log(error);
+            setResponseMessage(error)
         } finally {
             setIsLoading(false);
         }
