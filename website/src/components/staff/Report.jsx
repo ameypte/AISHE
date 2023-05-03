@@ -61,7 +61,7 @@ export default function Report() {
                 onChange={(e) => setGender(e.target.value)}
 
               />
-              <label className="form-check-label" htmlFor="inlineRadio1">
+              <label className="form-check-label" htmlFor="male">
                 Male
               </label>
             </div>
@@ -76,7 +76,7 @@ export default function Report() {
 
                 value="female"
               />
-              <label className="form-check-label" htmlFor="inlineRadio2">
+              <label className="form-check-label" htmlFor="female">
                 Female
               </label>
             </div>
@@ -91,7 +91,7 @@ export default function Report() {
 
                 value="others"
               />
-              <label className="form-check-label" htmlFor="inlineRadio2">
+              <label className="form-check-label" htmlFor="others">
                 Others
               </label>
             </div>
@@ -112,7 +112,7 @@ export default function Report() {
             <button
               className="btn btn-danger"
               // onClickCapture={handelGenerate}
-            >
+             >
               Generate
             </button>
           )}

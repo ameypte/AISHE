@@ -136,7 +136,7 @@ export default function Form() {
                                 onChange={(e) => setGender(e.target.value)}
                                 required
                             />
-                            <label className="form-check-label" htmlFor="inlineRadio1">
+                            <label className="form-check-label" htmlFor="male">
                                 Male
                             </label>
                         </div>
@@ -151,7 +151,7 @@ export default function Form() {
                                 required
                                 value="female"
                             />
-                            <label className="form-check-label" htmlFor="inlineRadio2">
+                            <label className="form-check-label" htmlFor="female">
                                 Female
                             </label>
                         </div>
@@ -166,7 +166,7 @@ export default function Form() {
                                 required
                                 value="others"
                             />
-                            <label className="form-check-label" htmlFor="inlineRadio2">
+                            <label className="form-check-label" htmlFor="others">
                                 Others
                             </label>
                         </div>
