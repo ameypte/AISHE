@@ -33,7 +33,7 @@ export default function Result() {
                     >
                         {!isUpLoadFromFile ? "Upload file" : "Fill from"}
                     </button>
-                    
+
                     <button
                         className="mb-3 btn  btn-success"
                         onClick={() => setIsReport(true)}
@@ -42,13 +42,7 @@ export default function Result() {
                         Generate Report
                     </button>
                 </div>
-                {isReport ? (
-                    <Report />
-                ) : !isUpLoadFromFile ? (
-                    <Form />
-                ) : (
-                    <Upload />
-                )}
+                {isReport ? (<Report />) : !isUpLoadFromFile ? (<Form />) : (<Upload />)}
             </div>
         </>
     );
