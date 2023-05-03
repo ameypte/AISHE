@@ -33,8 +33,8 @@ export default function Upload() {
             if (
                 worksheet.A1 &&
                 worksheet.A1.v === "Sr No" &&
-                worksheet.J1 &&
-                worksheet.J1.v === "Designation"
+                worksheet.I1 &&
+                worksheet.I1.v === "Designation"
             ) {
                 const newData = XLSX.utils.sheet_to_json(worksheet);
                 setStaffData(newData);
@@ -104,7 +104,7 @@ export default function Upload() {
                     </button>
                 </div>
                 {/* display staffData varible value */}
-                <pre>{JSON.stringify(staffData, null, 2)}</pre>
+                {/* <pre>{JSON.stringify(staffData, null, 2)}</pre>  */}
             </div>
         </div>
     );

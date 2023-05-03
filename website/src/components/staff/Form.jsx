@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
+import firebaseConfig from "../config/firebaseConfig";
 
 export default function Form() {
     const [fname, setFname] = useState("");
-    const [mname, setMname] = useState("");
     const [lname, setLname] = useState("");
     const [email, setEmail] = useState("");
     const [gender, setGender] = useState("");
@@ -14,13 +16,38 @@ export default function Form() {
 
     const handelSubmit = (e) => {
         e.preventDefault();
+        firebase.initializeApp(firebaseConfig);
         const data = {
-            first_name: fname,
-            middle_name: mname,
-            last_name: lname,
-            email: email,
+            "First Name":fname,
+            "Last Name":lname,
+            "Email Address":email,
+            "Gender": gender,
+            "Designation":designation,
+            "Mobile Number":number,
+            "Date Of Birth":dateOfBirth,
+            "PAN Number":pan,
         };
-        alert(JSON.stringify(data));
+
+        const db = firebase.database().ref("Staff information")
+        db.once("value", (snapshot) => {
+            const count = snapshot.numChildren();
+            db.child(count)
+                .set(data)
+                .catch((err) => {
+                    setMessage(err.message);
+                });
+        });
+
+
+        setFname("");
+        setLname("");
+        setEmail("");
+        setGender("");
+        setDesignation("");
+        setNumber("");
+        setDateOfBirth("");
+        setPan("");
+
         setMessage("Data has been submitted");
     };
 
@@ -48,7 +75,21 @@ export default function Form() {
                         required
                     />
                 </div>
-
+                <div className="form-group mb-3 col-6">
+                    <label htmlFor="lname" className="form-label">
+                        Last Name
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="lname"
+                        name="lname"
+                        placeholder="Enter staff last name"
+                        value={lname}
+                        onChange={(e) => setLname(e.target.value)}
+                        required
+                    />
+                </div>
                 <div className="form-group mb-3 col-6">
                     <label htmlFor="pan" className="form-label">
                         Pan Number
@@ -179,11 +220,9 @@ export default function Form() {
                
                 <div className="text-center">
                     <button
-                        type="button"
+                        type="submit"
                         className="btn btn-success"
-                        onClick=""
                     >
-                        <i className="bi bi-cloud-upload"></i>
                         Submit
                     </button>
                 </div>
