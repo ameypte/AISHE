@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "firebase/compat/database";
 import Upload from "../components/result/Upload";
 import Form from "../components/result/Form";
 import Report from "../components/result/Report";
