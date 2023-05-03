@@ -5,6 +5,7 @@ export default function Form() {
     const [mname, setMname] = useState("");
     const [lname, setLname] = useState("");
     const [email, setEmail] = useState("");
+    const [pan, setPan] = useState("");
     const [message, setMessage] = useState("");
 
     const handelSubmit = (e) => {
@@ -28,7 +29,7 @@ export default function Form() {
                         {message}
                     </div>
                 )}
-                <div className="form-group mb-3 col-4">
+                <div className="form-group mb-3 col-6">
                     <label htmlFor="fname" className="form-label">
                         First Name
                     </label>
@@ -43,22 +44,8 @@ export default function Form() {
                         required
                     />
                 </div>
-                <div className="form-group mb-3 col-4">
-                    <label htmlFor="mname" className="form-label">
-                        Middle Name
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="mname"
-                        name="mname"
-                        placeholder="Enter staff middle name"
-                        value={mname}
-                        onChange={(e) => setMname(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group mb-3 col-4">
+                
+                <div className="form-group mb-3 col-6">
                     <label htmlFor="lname" className="form-label">
                         Last Name
                     </label>
@@ -70,6 +57,21 @@ export default function Form() {
                         placeholder="Enter staff last name"
                         value={lname}
                         onChange={(e) => setLname(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="form-group mb-3 col-6">
+                    <label htmlFor="pan" className="form-label">
+                        Pan Number
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="pan"
+                        name="pan"
+                        placeholder="Enter Staff Pan Number"
+                        value={pan}
+                        onChange={(e) => setPan(e.target.value)}
                         required
                     />
                 </div>
