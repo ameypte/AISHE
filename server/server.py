@@ -64,6 +64,37 @@ def report():
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
+@app.route('/staffreport', methods=['POST'])
+def staffreport():
+    try:
+        designation = request.json['designation']
+        gender = request.json['gender']
+        ref = db.reference('Staff information')
+        data = ref.get()
+
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+        
+        filtered_data = [staff for staff in data if staff.get(
+            'Designation') == designation]
+        
+        if gender:
+            new_filtered_data = [staff for staff in filtered_data if staff.get("Gender") == gender]
+            if new_filtered_data:
+                return jsonify(new_filtered_data)
+            else:
+                return jsonify({'message': 'No data found for the specified Gender'}), 404
+        
+        if not filtered_data:
+            return jsonify({'message': 'No data found for the specified designation'}), 404
+        
+        return jsonify(filtered_data)
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
+    
+
+
 
 @app.route('/clearresult')
 def clear():
@@ -71,6 +102,11 @@ def clear():
     ref.delete()
     return jsonify({'message': 'Data cleared successfully'})
 
+@app.route('/clearstaff', methods=['POST'])
+def clearstaff():
+    ref = db.reference('Staff information')
+    ref.delete()
+    return jsonify({'message': 'Data cleared successfully'})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -32,9 +32,9 @@ export default function Upload() {
             // Check if required columns exist
             if (
                 worksheet.A1 &&
-                worksheet.A1.v === "Sr No" &&
-                worksheet.I1 &&
-                worksheet.I1.v === "Designation"
+                worksheet.A1.v === "First Name" &&
+                worksheet.H1 &&
+                worksheet.H1.v === "Designation"
             ) {
                 const newData = XLSX.utils.sheet_to_json(worksheet);
                 setStaffData(newData);
