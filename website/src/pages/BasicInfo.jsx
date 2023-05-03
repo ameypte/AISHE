@@ -178,7 +178,18 @@ export default function BasicInfo() {
 
   return (
     <div className="container my-4 p-5 rounded shadow bg-body-tertiary">
+      
       <h1 className="text-center mb-3">Institute Information Form</h1>
+      <div className="text-start">
+                    <button 
+                        type="button"
+                        className="btn btn-success mb-3"
+                        onClick=""
+                    >
+                        <i className="bi bi-cloud-upload"></i>
+                        Print
+                    </button>
+                </div>
       <form className="row" onSubmit={handleSubmit}>
         <div className="form-group mb-3">
           <label htmlFor="institute-name" className="form-label">
