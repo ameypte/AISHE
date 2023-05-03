@@ -52,6 +52,7 @@ export default function Form() {
     };
 
     return (
+        
         <div>
             <h2>Fill The Form</h2>
             <form className="row" onSubmit={handelSubmit}>
