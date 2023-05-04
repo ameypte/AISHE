@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 export default function Report() {
   const [message, setMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [gender, setGender] = useState([
     "Male",
     "Female",
     "Other"
   ]);
-  const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState(
     [
       "OBC",
