@@ -91,6 +91,7 @@ export default function Departments() {
                     </div>
                 </div>
             ) : null}
+            
             <table className="table table-bordered text-center table-hover">
                 <thead>
                     <tr>
