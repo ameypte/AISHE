@@ -74,7 +74,7 @@ export default function Departments() {
     };
 
     return (
-        <div className="container my-4 px-5 py-4 rounded shadow bg-body-tertiary">
+        <div className=" my-4 px-5 py-4 rounded shadow bg-body-tertiary">
             <h2 className="text-center mb-4 col">Departments Page</h2>
             {message && (
                 <div className="alert alert-success" role="alert">
