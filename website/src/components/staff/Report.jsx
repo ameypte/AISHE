@@ -15,6 +15,7 @@ export default function Report() {
     const [selectedDesignation, setSelectedDesignation] = useState("");
 
     useEffect(() => {
+        firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database().ref("Staff information");
         dbRef.on("value", (snapshot) => {
             const data = snapshot.val();

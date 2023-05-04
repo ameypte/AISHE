@@ -39,7 +39,8 @@ def upload():
 def report():
     try:
         program_char_code = request.json['program_char_code']
-        student_id = request.json.get('studentId')  # studentId is optional, so use .get()
+        # studentId is optional, so use .get()
+        student_id = request.json.get('studentId')
 
         ref = db.reference('Result information')
         data = ref.get()
@@ -54,7 +55,8 @@ def report():
             return jsonify({'message': 'No data found for the specified program_char_code'}), 404
 
         if student_id:
-            student_data = [student for student in filtered_data if student.get('reg_no') == student_id]
+            student_data = [student for student in filtered_data if student.get(
+                'reg_no') == student_id]
             if student_data:
                 return jsonify(student_data)
             else:
@@ -63,6 +65,7 @@ def report():
         return jsonify(filtered_data)
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+
 
 @app.route('/staffreport', methods=['POST'])
 def staffreport():
@@ -74,26 +77,57 @@ def staffreport():
 
         if data is None:
             return jsonify({'message': 'No data found'}), 404
-        
+
         filtered_data = [staff for staff in data if staff.get(
             'Designation') == designation]
-        
+
         if gender:
-            new_filtered_data = [staff for staff in filtered_data if staff.get("Gender") == gender]
+            new_filtered_data = [
+                staff for staff in filtered_data if staff.get("Gender") == gender]
             if new_filtered_data:
                 return jsonify(new_filtered_data)
             else:
                 return jsonify({'message': 'No data found for the specified Gender'}), 404
-        
+
         if not filtered_data:
             return jsonify({'message': 'No data found for the specified designation'}), 404
-        
+
         return jsonify(filtered_data)
     except Exception as e:
         print(e)
         return jsonify({'message': str(e)}), 500
-    
 
+
+@app.route('/studentreport', methods=['POST'])
+def studentreport():
+    try:
+        category = request.json['category']
+        gender = request.json['gender']
+
+        ref = db.reference('Student information')
+        data = ref.get()
+
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+
+        filtered_data = [student for student in data if student.get(
+            'Category') == category]
+
+        if gender:
+            new_filtered_data = [
+                student for student in filtered_data if student.get('Gender') == gender]
+            if new_filtered_data:
+                return jsonify(new_filtered_data)
+            else:
+                return jsonify({'message': 'No data found for the specified Gender'}), 404
+
+        if not filtered_data:
+            return jsonify({'message': 'No data found for the specified Category'}), 404
+
+        return jsonify(filtered_data)
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
 
 
 @app.route('/clearresult')
@@ -102,11 +136,13 @@ def clear():
     ref.delete()
     return jsonify({'message': 'Data cleared successfully'})
 
+
 @app.route('/clearstaff', methods=['POST'])
 def clearstaff():
     ref = db.reference('Staff information')
     ref.delete()
     return jsonify({'message': 'Data cleared successfully'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
