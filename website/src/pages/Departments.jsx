@@ -5,7 +5,7 @@ import firebaseConfig from "../components/config/firebaseConfig";
 import isLoggedIn from "../components/isLoggedIn";
 import jsPDF from "jspdf";
 
-export default function Departments() {
+export default function Departments(props) {
     const [departments, setDepartments] = useState([{ name: "" }]);
     const isUserLoggedIn = isLoggedIn();
     const [message, setMessage] = useState("");
@@ -74,8 +74,8 @@ export default function Departments() {
     };
 
     return (
-        <div className=" my-4 px-5 py-4 rounded shadow bg-body-tertiary">
-            <h2 className="text-center mb-4 col">Departments Page</h2>
+        <div className={(!props.aisheReport) ? ("container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"):("")}>
+            <h2 className="text-center mb-4 col">Departments Information</h2>
             {message && (
                 <div className="alert alert-success" role="alert">
                     {message}
@@ -92,12 +92,12 @@ export default function Departments() {
                 </div>
             ) : null}
             
-            <table className="table table-bordered text-center table-hover">
+            <table className="table table-bordered table-striped text-center table-hover">
                 <thead>
                     <tr>
                         <th style={{ width: "10%" }}>Sr. No.</th>
                         <th>Department Name</th>
-                        <th style={{ width: "10%" }}>Actions</th>
+                        {(!props.aisheReport) && ( <th style={{ width: "10%" }}>Actions</th>)}
                     </tr>
                 </thead>
                 <tbody>
@@ -114,7 +114,9 @@ export default function Departments() {
                                     }
                                 />
                             </td>
+                            {(!props.aisheReport) && (
                             <td style={{ width: "10%" }}>
+                                
                                 <button
                                     type="button"
                                     className="btn btn-danger"
@@ -124,10 +126,15 @@ export default function Departments() {
                                 >
                                     Remove
                                 </button>
+                    
                             </td>
+                            )}
+
                         </tr>
                     ))}
+                    
                 </tbody>
+                {(!props.aisheReport) && (
                 <tfoot>
                     <tr>
                         <td colSpan="3" className="text-center">
@@ -148,9 +155,11 @@ export default function Departments() {
                         </td>
                     </tr>
                 </tfoot>
+                )}
             </table>
 
             <div className="text-end">
+            {(!props.aisheReport) && (
                 <button
                     type="button"
                     className="btn btn-outline-success"
@@ -158,6 +167,7 @@ export default function Departments() {
                 >
                     Print
                 </button>
+            )}
             </div>
         </div>
     );

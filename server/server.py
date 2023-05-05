@@ -128,6 +128,25 @@ def studentreport():
     except Exception as e:
         print(e)
         return jsonify({'message': str(e)}), 500
+    
+
+@app.route('/staff')
+def staff():
+    ref = db.reference('Staff information')
+    data = ref.get()
+    return jsonify(data)
+
+@app.route('/students')
+def students():
+    ref = db.reference('Student information')
+    data = ref.get()
+    return jsonify(data)
+
+@app.route('/result')
+def result():
+    ref = db.reference('Result information')
+    data = ref.get()
+    return jsonify(data)
 
 
 @app.route('/clearresult')

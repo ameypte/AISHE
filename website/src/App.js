@@ -11,7 +11,7 @@ import Students from "./pages/Students";
 import Staff from "./pages/Staff";
 import Sidebar from "./components/SideBar";
 import Departments from "./pages/Departments";
-import AisheReport from "./pages/aishereport";
+import AisheReport from "./pages/Aishereport";
 
 const router = createBrowserRouter([
   {

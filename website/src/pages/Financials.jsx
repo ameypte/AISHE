@@ -6,7 +6,7 @@ import "firebase/compat/database";
 import firebaseConfig from "../components/config/firebaseConfig";
 
 
-export default function Financials() {
+export default function Financials(props) {
   const isUserLoggedIn = isLoggedIn();
   const [income, setIncome] = useState([{ items: "", amtTho: "", amtRs: "" }]);
   const [expend, setExpend] = useState([{ items: "", amtTho: "", amtRs: "" }]);
@@ -156,7 +156,7 @@ export default function Financials() {
 
   return (
     <>
-      <div className="container my-4 px-5 py-4 rounded shadow bg-body-tertiary">
+      <div className={(!props.aisheReport) ? ("container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"):("")}>
         {/* <h2 className="text-center mb-4 col">Financial Information</h2> */}
         {incMessage && (
           <div className="alert alert-success" role="alert">
@@ -174,14 +174,14 @@ export default function Financials() {
           </div>
         ) : null}
         <h3 className="text-center mb-4 col">Income</h3>
-        <table className="table table-bordered text-center table-hover">
+        <table className="table table-bordered table-striped text-center table-hover">
           <thead>
             <tr>
               <th style={{ width: "10%" }}>Sr. No.</th>
               <th style={{ width: "40%" }}>Items</th>
               <th style={{ width: "25%" }}>Amount Converted in Thousand</th>
               <th style={{ width: "30%" }}>Amount in Absoulte Rupees</th>
-              <th style={{ width: "20%" }}>Actions</th>
+              {(!props.aisheReport) && ( <th style={{ width: "20%" }}>Actions</th>)}
             </tr>
           </thead>
           <tbody>
@@ -218,6 +218,7 @@ export default function Financials() {
                     }
                   />
                 </td>
+                {(!props.aisheReport) && (
                 <td style={{ width: "10%" }}>
                   <button
                     type="button"
@@ -229,9 +230,11 @@ export default function Financials() {
                     Remove
                   </button>
                 </td>
+                )}
               </tr>
             ))}
           </tbody>
+          {(!props.aisheReport) && (
           <tfoot>
             <tr>
               <td colSpan="5" className="text-center">
@@ -252,9 +255,11 @@ export default function Financials() {
               </td>
             </tr>
           </tfoot>
+          )}
         </table>
 
         <div className="text-end">
+        {(!props.aisheReport) && (
           <button
             type="button"
             className="btn btn-outline-success"
@@ -262,13 +267,14 @@ export default function Financials() {
           >
             Print
           </button>
+        )}
         </div>
       </div>
 
 
       {/* for Expend Part */}
 
-      <div className="container my-4 px-5 py-4 rounded shadow bg-body-tertiary">
+      <div className={(!props.aisheReport) ? ("container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"):("")}>
 
         {expMessage && (
           <div className="alert alert-success" role="alert">
@@ -285,15 +291,15 @@ export default function Financials() {
             </div>
           </div>
         ) : null}
-        <h3 className="text-center mb-4 col">Income</h3>
-        <table className="table table-bordered text-center table-hover">
+        <h3 className="text-center mb-4 col">Expenditure</h3>
+        <table className="table table-bordered  table-striped text-center table-hover">
           <thead>
             <tr>
               <th style={{ width: "10%" }}>Sr. No.</th>
               <th style={{ width: "40%" }}>Items</th>
               <th style={{ width: "25%" }}>Amount Converted in Thousand</th>
               <th style={{ width: "30%" }}>Amount in Absoulte Rupees</th>
-              <th style={{ width: "20%" }}>Actions</th>
+              {(!props.aisheReport) && (<th style={{ width: "20%" }}>Actions</th>)}
             </tr>
           </thead>
           <tbody>
@@ -330,6 +336,7 @@ export default function Financials() {
                     }
                   />
                 </td>
+                {(!props.aisheReport) && (
                 <td style={{ width: "10%" }}>
                   <button
                     type="button"
@@ -341,9 +348,11 @@ export default function Financials() {
                     Remove
                   </button>
                 </td>
+                )}
               </tr>
             ))}
           </tbody>
+          {(!props.aisheReport) && (
           <tfoot>
             <tr>
               <td colSpan="5" className="text-center">
@@ -364,9 +373,11 @@ export default function Financials() {
               </td>
             </tr>
           </tfoot>
+          )}
         </table>
 
         <div className="text-end">
+        {(!props.aisheReport) && (
           <button
             type="button"
             className="btn btn-outline-success"
@@ -374,6 +385,7 @@ export default function Financials() {
           >
             Print
           </button>
+        )}
         </div>
       </div>
     </>

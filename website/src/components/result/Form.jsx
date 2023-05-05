@@ -7,11 +7,10 @@ export default function Form() {
     const [name, setName] = useState("");
     const [roll, setRoll] = useState("");
     const [program, setProgram] = useState("");
-    const [stdId, setStdId] = useState("");
     const [total, setTotal] = useState("");
     const [obtained, setObtained] = useState("");
     const [result, setResult] = useState("");
-    const [percantage, setPercantage] = useState("");
+    const [percentage, setPercentage] = useState("");
     const [message, setMessage] = useState("");
 
     const handelSubmit = (e) => {
@@ -23,7 +22,7 @@ export default function Form() {
             Name: name,
             reg_no: roll,
             program_char_code: program,
-            student_id: stdId,
+            percentage: percentage,
             total_outof: total,
             total_obtained: obtained,
             result: result,
@@ -40,7 +39,6 @@ export default function Form() {
                     setName("");
                     setRoll("");
                     setProgram("");
-                    setStdId("");
                     setTotal("");
                     setObtained("");
                     setResult("");
@@ -107,21 +105,6 @@ export default function Form() {
                     />
                 </div>
                 <div className="form-group mb-3 col-6">
-                    <label htmlFor="stdId" className="form-label">
-                        Student ID
-                    </label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="stdId"
-                        name="stdId"
-                        placeholder="Enter student ID"
-                        value={stdId}
-                        onChange={(e) => setStdId(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group mb-3 col-6">
                     <label htmlFor="total" className="form-label">
                         Total Marks
                     </label>
@@ -151,7 +134,7 @@ export default function Form() {
                         value={obtained}
                         onChange={(e) => {
                             setObtained(e.target.value);
-                            setPercantage(
+                            setPercentage(
                                 ((e.target.value / total) * 100).toFixed(2)
                             );
                             setResult(
@@ -188,7 +171,7 @@ export default function Form() {
                         className="form-control"
                         id="percantage"
                         name="percantage"
-                        value={percantage}
+                        value={percentage}
                         readOnly
                         disabled
                         required
