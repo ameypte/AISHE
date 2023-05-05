@@ -3,11 +3,14 @@ import isLoggedIn from "../components/isLoggedIn";
 import firebase from "firebase/compat/app";
 import firebaseConfig from "../components/config/firebaseConfig";
 import "firebase/compat/database";
+import {useNavigate} from "react-router-dom"
+
 export default function Dashboard() {
     const user = localStorage.getItem("user");
     const role = localStorage.getItem("role");
     const dept = localStorage.getItem("dept");
     const [name, setName] = useState();
+    const navigate = useNavigate();
 
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
@@ -55,7 +58,7 @@ export default function Dashboard() {
                 </p>
             </div>
             <div className="text-end">
-                <button type="button" class="btn btn-outline-success">
+                <button type="button" onClick={()=>{navigate("/aishe-report")}}class="btn btn-outline-success">
                     Generate Report
                 </button>
             </div>
