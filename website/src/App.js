@@ -11,6 +11,7 @@ import Students from "./pages/Students";
 import Staff from "./pages/Staff";
 import Sidebar from "./components/SideBar";
 import Departments from "./pages/Departments";
+import AisheReport from "./pages/aishereport";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,6 @@ const router = createBrowserRouter([
         <Dashboard />
       </Sidebar>
     ),
-    // authRequired: true,
   },
   {
     path: "/basicinfo",
@@ -86,6 +86,10 @@ const router = createBrowserRouter([
       </Sidebar>
     ),
   },
+  {
+    path:"/aishe-report",
+    element:<AisheReport/>
+  }
 ]);
 
 function App() {
