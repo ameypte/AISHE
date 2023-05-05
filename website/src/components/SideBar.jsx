@@ -37,11 +37,6 @@ export default function SideBar({ children }) {
       name: "Departments",
       icon: <BsBuildingsFill />,
     },
-    // {
-    //   path: "/courses",
-    //   name: "Courses",
-    //   icon: <MdSubject />,
-    // },
     {
       path: "/students",
       name: "Students",

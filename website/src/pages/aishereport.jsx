@@ -9,6 +9,7 @@ export default function Aishereport() {
     const [studentData, setStudentData] = useState([]);
     const [resultData, setResultData] = useState([]);
     useEffect(() => {
+        
         fetch("http://localhost:5000/staff")
             .then((res) => res.json())
             .then((data) => {

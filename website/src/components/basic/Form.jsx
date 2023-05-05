@@ -55,62 +55,12 @@ export default function Form(props) {
     const [intakeCapacity, setIntakeCapacity] = useState([]);
     const [studentResiding, setStudentResiding] = useState([]);
 
-    // // test data
-    // const [instituteName, setInstituteName] = useState("ABC Institute");
-    // const [aisheCode, setAisheCode] = useState("12345");
-    // const [city, setCity] = useState("New York");
-    // const [addressLine1, setAddressLine1] = useState("123 Main Street");
-    // const [addressLine2, setAddressLine2] = useState("Apt 2B");
-    // const [state, setState] = useState("NY");
-    // const [district, setDistrict] = useState("Manhattan");
-    // const [website, setWebsite] = useState("https://www.example.com");
-    // const [totalArea, setTotalArea] = useState(5000);
-    // const [constructedArea, setConstructedArea] = useState(2500);
-    // const [establishmentYear, setEstablishmentYear] = useState(2000);
-    // const [headName, setHeadName] = useState("John Smith");
-    // const [headContact, setHeadContact] = useState("123-456-7890");
-    // const [headEmail, setHeadEmail] = useState("john.smith@example.com");
-    // const [nodalName, setNodalName] = useState("Jane Doe");
-    // const [nodalDesignation, setNodalDesignation] = useState("Manager");
-    // const [nodalTelephone, setNodalTelephone] = useState("987-654-3210");
-    // const [nodalContact, setNodalContact] = useState("876-543-2109");
-    // const [nodalEmail, setNodalEmail] = useState("jane.doe@example.com");
-    // const [recognitionYear, setRecognitionYear] = useState(2010);
-    // const [institutionLocation, setInstitutionLocation] = useState("Rural");
-    // const [instituteBlockCityTown, setInstituteBlockCityTown] =
-    //     useState("Town");
-    // const [latitude, setLatitude] = useState(40.7128);
-    // const [longitude, setLongitude] = useState(-74.006);
-    // const [isDegreeThroughUniversity, setIsDegreeThroughUniversity] =
-    //     useState(true);
-    // const [degreeThroughUniversityName, setDegreeThroughUniversityName] =
-    //     useState("XYZ University");
-    // const [managementOfInstitute, setManagementOfInstitute] =
-    //     useState("Private");
-    // const [nameOfMinistry, setNameOfMinistry] = useState(
-    //     "Ministry of Education"
-    // );
-    // const [isInstituteMeantForGirls, setIsInstituteMeantForGirls] =
-    //     useState(true);
-    // const [isStaffAvailable, setIsStaffAvailable] = useState(true);
-    // const [isHostelAvailable, setIsHostelAvailable] = useState(true);
-    // const [teachingStaff, setTeachingStaff] = useState(50);
-    // const [nonTeachingStaff, setNonTeachingStaff] = useState(20);
-    // const [hostelNo, setHostelNo] = useState(3);
-    // const [hostelName, setHostelName] = useState([
-    //     "Hostel A",
-    //     "Hostel B",
-    //     "Hostel C",
-    // ]);
-    // const [hostelType, setHostelType] = useState(["Boys", "Girls", "Mixed"]);
-    // const [intakeCapacity, setIntakeCapacity] = useState([50, 60, 70]);
-    // const [studentResiding, setStudentResiding] = useState([45, 55, 60]);
-
     const calculateTotal = () => {
         const total = teachingStaff + nonTeachingStaff;
         return total;
     };
     useEffect(() => {
+        firebase.initializeApp(firebaseConfig);
         const isUserLoggedIn = isLoggedIn();
 
         if (!isUserLoggedIn) {
@@ -118,15 +68,54 @@ export default function Form(props) {
             alert("You are not logged in");
             return null;
         }
+        const ref = firebase.database().ref("Basic Information");
+
+        ref.on("value", (snapshot) => {
+            const data = snapshot.val();
+            setInstituteName(data.instituteName);
+            setAisheCode(data.aisheCode);
+            setCity(data.city);
+            setAddressLine1(data.addressLine1);
+            setAddressLine2(data.addressLine2);
+            setState(data.state);
+            setDistrict(data.district);
+            setWebsite(data.website);
+            setTotalArea(data.totalArea);
+            setConstructedArea(data.constructedArea);
+            setEstablishmentYear(data.establishmentYear);
+            setHeadName(data.headName);
+            setHeadContact(data.headContact);
+            setHeadEmail(data.headEmail);
+            setNodalName(data.nodalName);
+            setNodalDesignation(data.nodalDesignation);
+            setNodalTelephone(data.nodalTelephone);
+            setNodalContact(data.nodalContact);
+            setNodalEmail(data.nodalEmail);
+            setRecognitionYear(data.recognitionYear);
+            setInstitutionLocation(data.institutionLocation);
+            setInstituteBlockCityTown(data.instituteBlockCityTown);
+            setLatitude(data.latitude);
+            setLongitude(data.longitude);
+            setIsDegreeThroughUniversity(data.isDegreeThroughUniversity);
+            setDegreeThroughUniversityName(data.degreeThroughUniversityName);
+            setManagementOfInstitute(data.managementOfInstitute);
+            setNameOfMinistry(data.nameOfMinistry);
+            setIsInstituteMeantForGirls(data.isInstituteMeantForGirls);
+            setIsStaffAvailable(data.isStaffAvailable);
+            setIsHostelAvailable(data.isHostelAvailable);
+            setTeachingStaff(data.teachingStaff);
+            setNonTeachingStaff(data.nonTeachingStaff);
+            setHostelNo(data.hostelNo);
+            setHostelName(data.hostelName);
+            setHostelType(data.hostelType);
+            setIntakeCapacity(data.intakeCapacity);
+            setStudentResiding(data.studentResiding);
+        });
     }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const database = firebase
-            .database()
-            .ref("institutes")
-            .child(aisheCode)
-            .child("Basic Information");
+        const database = firebase.database().ref("Basic Information");
 
         database.once("value", (snapshot) => {
             if (snapshot.exists()) {
@@ -172,7 +161,6 @@ export default function Form(props) {
                     intakeCapacity,
                     studentResiding,
                 };
-
                 database.set(data);
 
                 alert("Data Saved");
@@ -180,7 +168,13 @@ export default function Form(props) {
         });
     };
     return (
-        <div className={(!props.aisheReport) ? ("container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"):("py-4")}>
+        <div
+            className={
+                !props.aisheReport
+                    ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
+                    : "py-4"
+            }
+        >
             <h1 className="text-center mb-3">Institute Information</h1>
             <div className="text-start">
                 {!props.aisheReport ? (
@@ -503,10 +497,7 @@ export default function Form(props) {
                                 }
                                 required
                             />
-                            <label
-                                className="form-check-label"
-                                htmlFor="inlineRadio1"
-                            >
+                            <label className="form-check-label" htmlFor="Rural">
                                 Rural
                             </label>
                         </div>
@@ -522,10 +513,7 @@ export default function Form(props) {
                                 required
                                 value="Urban"
                             />
-                            <label
-                                className="form-check-label"
-                                htmlFor="inlineRadio2"
-                            >
+                            <label className="form-check-label" htmlFor="Urban">
                                 Urban
                             </label>
                         </div>
@@ -695,13 +683,13 @@ export default function Form(props) {
                                 onChange={() => {
                                     setIsInstituteMeantForGirls(true);
                                 }}
-                                id="Yes"
+                                id="meantforGirlsYes"
                                 value="Yes"
                                 required
                             />
                             <label
                                 className="form-check-label"
-                                htmlFor="inlineRadio1"
+                                htmlFor="meantforGirlsYes"
                             >
                                 Yes
                             </label>
@@ -711,7 +699,7 @@ export default function Form(props) {
                                 className="form-check-input"
                                 type="radio"
                                 name="meantforGirls"
-                                id="No"
+                                id="meantforGirlsNo"
                                 onChange={() => {
                                     setIsInstituteMeantForGirls(false);
                                 }}
@@ -720,7 +708,7 @@ export default function Form(props) {
                             />
                             <label
                                 className="form-check-label"
-                                htmlFor="inlineRadio2"
+                                htmlFor="meantforGirlsNo"
                             >
                                 No
                             </label>
@@ -835,7 +823,7 @@ export default function Form(props) {
                                 className="form-check-input"
                                 type="radio"
                                 name="hostel"
-                                id="hostel-yes"
+                                id="hostelyes"
                                 value="Yes"
                                 onChange={() => {
                                     setIsHostelAvailable(true);
@@ -844,7 +832,7 @@ export default function Form(props) {
                             />
                             <label
                                 className="form-check-label"
-                                htmlFor="hostel-yes"
+                                htmlFor="hostelyes"
                             >
                                 Yes
                             </label>
@@ -854,7 +842,7 @@ export default function Form(props) {
                                 className="form-check-input"
                                 type="radio"
                                 name="hostel"
-                                id="hostel-no"
+                                id="hostelno"
                                 required
                                 value="No"
                                 onChange={() => {
@@ -863,7 +851,7 @@ export default function Form(props) {
                             />
                             <label
                                 className="form-check-label"
-                                htmlFor="hostel-no"
+                                htmlFor="hostelno"
                             >
                                 No
                             </label>

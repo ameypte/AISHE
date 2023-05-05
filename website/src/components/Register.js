@@ -72,6 +72,23 @@ export default function Register() {
             if (isAlreadyRegistered) break;
           }
           if (!isAlreadyRegistered) {
+            if (selectedRole === "Principal" || selectedRole === "Other") {
+              firebase
+                .database()
+                .ref(selectedRole)
+                .child(phone)
+                .set({
+                  name: name,
+                  email: email,
+                  password: password,
+                  gender: gender
+                });
+
+              alert("Registration successful");
+              formRef.current.reset();
+              handleReset();
+              return;
+            }
             firebase
               .database()
               .ref("Departments")
@@ -176,22 +193,6 @@ export default function Register() {
                       onClick={() => setSelectedRole("HOD")}
                     >
                       HOD
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item"
-                      onClick={() => setSelectedRole("Principal")}
-                    >
-                      Principal
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      className="dropdown-item"
-                      onClick={() => setSelectedRole("Other")}
-                    >
-                      Other
                     </a>
                   </li>
                 </ul>
