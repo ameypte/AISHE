@@ -2,8 +2,9 @@ import React from "react";
 import "../App.css";
 import { FaTh, FaBuilding, FaRegListAlt, FaBars } from "react-icons/fa";
 import { BsBank } from "react-icons/bs";
-import { MdSubject } from "react-icons/md";
-import { IoPeople } from "react-icons/io5";
+import { BsBuildingGear } from "react-icons/bs";
+// import { MdSubject } from "react-icons/md";
+import { IoAirplane, IoPeople } from "react-icons/io5";
 import { IoIosPeople } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { AiFillInfoCircle } from "react-icons/ai";
@@ -57,7 +58,11 @@ export default function SideBar({ children }) {
       name: "Staff",
       icon: <IoPeople />,
     },
-   
+    {
+      path: "/infrastructure",
+      name: "Infrastructure",
+      icon: <BsBuildingGear />,
+    },
     {
       path: "/",
       name: "Logout",

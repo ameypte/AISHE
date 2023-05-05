@@ -12,6 +12,7 @@ import Staff from "./pages/Staff";
 import Sidebar from "./components/SideBar";
 import Departments from "./pages/Departments";
 import AisheReport from "./pages/Aishereport";
+import Infrastructure from "./pages/Infrastructure";
 
 const router = createBrowserRouter([
   {
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
   {
     path:"/aishe-report",
     element:<AisheReport/>
+  },
+  {
+    path:"/infrastructure",
+    element:(
+    <Sidebar>
+      <Infrastructure/>
+    </Sidebar>
+    )
   }
 ]);
 
