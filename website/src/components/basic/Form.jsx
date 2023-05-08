@@ -172,7 +172,7 @@ export default function Form(props) {
             className={
                 !props.aisheReport
                     ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
-                    : "py-4"
+                    : "py-4 rounded shadow bg-body-tertiary px-4"
             }
         >
             <h1 className="text-center mb-3">Institute Information</h1>
@@ -686,6 +686,7 @@ export default function Form(props) {
                                 id="meantforGirlsYes"
                                 value="Yes"
                                 required
+                                checked = {isInstituteMeantForGirls}
                             />
                             <label
                                 className="form-check-label"
@@ -705,6 +706,7 @@ export default function Form(props) {
                                 }}
                                 value="No"
                                 required
+                                checked = {!isInstituteMeantForGirls}
                             />
                             <label
                                 className="form-check-label"
@@ -731,6 +733,7 @@ export default function Form(props) {
                                 }}
                                 id="staff-yes"
                                 required
+                                checked = {isStaffAvailable}
                             />
                             <label
                                 className="form-check-label"
@@ -750,6 +753,7 @@ export default function Form(props) {
                                 id="staff-no"
                                 required
                                 value="No"
+                                checked = {!isStaffAvailable}
                             />
                             <label
                                 className="form-check-label"
@@ -829,6 +833,7 @@ export default function Form(props) {
                                     setIsHostelAvailable(true);
                                 }}
                                 required
+                                checked = {isHostelAvailable}
                             />
                             <label
                                 className="form-check-label"
@@ -848,6 +853,7 @@ export default function Form(props) {
                                 onChange={() => {
                                     setIsHostelAvailable(false);
                                 }}
+                                checked = {!isHostelAvailable}
                             />
                             <label
                                 className="form-check-label"

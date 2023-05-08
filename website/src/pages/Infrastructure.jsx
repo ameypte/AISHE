@@ -1,43 +1,179 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
+import firebaseConfig from "../components/config/firebaseConfig";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
 
 export default function Infrastructure(props) {
-    const [isPlayground, setIsPlayground] = React.useState(false);
-    const [isAuditorium, setIsAuditorium] = React.useState(false);
-    const [isTheatre, setIsTheatre] = React.useState(false);
-    const [isLibrary, setIsLibrary] = React.useState(false);
-    const [numberOfBooks, setNumberOfBooks] = React.useState(0);
-    const [numberOfJournals, setNumberOfJournals] = React.useState(0);
-    const [isLaboratory, setIsLaboratory] = React.useState(false);
-    const [isConferenceHall, setIsConferenceHall] = React.useState(false);
-    const [isHealthCenter, setIsHealthCenter] = React.useState(false);
-    const [isGymnasium, setIsGymnasium] = React.useState(false);
-    const [isIndoorStadium, setIsIndoorStadium] = React.useState(false);
-    const [isCommonRoom, setIsCommonRoom] = React.useState(false);
-    const [isComputerCenter, setIsComputerCenter] = React.useState(false);
-    const [isCafeteria, setIsCafeteria] = React.useState(false);
-    const [isGuestHouse, setIsGuestHouse] = React.useState(false);
-    const [isseparateRoomForGirls, setIsseparateRoomForGirls] = React.useState(false);
-    const [isSolarPowerGeneration, setIsSolarPowerGeneration] = React.useState(false);
-    const [isConnectivityNKN, setIsConnectivityNKN] = React.useState(false);
-    const [isConnectivityNMEICT, setIsConnectivityNMEICT] = React.useState(false);
-    const [isCampusIsDifferntlyAbledFriendly, setIsCampusIsDifferntlyAbledFriendly] = React.useState(false);
-    const [isSeparateToiletForDisabledFemale,setIsSeparateToiletForDisabledFemale] = React.useState(false);
-    const [isRampAttachedToClassrooms, setIsRampAttachedToClassrooms] =React.useState(false);
-    const [isgrievanceRedressalMechanism, setIsgrievanceRedressalMechanism] =React.useState(false);
-    const [isVigilanceCell, setIsVigilanceCell] =React.useState(false);
-    const [isEqualOpportunityCell, setIsEqualOpportunityCell] =React.useState(false);
-    const [isSexualHarassmentCell, setIsSexualHarassmentCell] =React.useState(false);
-    const [isCounselorsforStudent, setIsCounselorsforStudent] =React.useState(false);
-    const [isClinic, setIsClinic] =React.useState(false);
-    const [isSeparateToiletForGirl, setIsSeparateToiletForGirl] =React.useState(false);
-    const [isSkillDevelopmentCell, setIsSkillDevelopmentCell] =React.useState(false);
-    const [isSelfDefenceClassesForFemales, setIsSelfDefenceClassesForFemales] =React.useState(false);
+    const [isPlayground, setIsPlayground] = useState(false);
+    const [isAuditorium, setIsAuditorium] = useState(false);
+    const [isTheatre, setIsTheatre] = useState(false);
+    const [isLibrary, setIsLibrary] = useState(false);
+    const [numberOfBooks, setNumberOfBooks] = useState(0);
+    const [numberOfJournals, setNumberOfJournals] = useState(0);
+    const [isLaboratory, setIsLaboratory] = useState(false);
+    const [isConferenceHall, setIsConferenceHall] = useState(false);
+    const [isHealthCenter, setIsHealthCenter] = useState(false);
+    const [isGymnasium, setIsGymnasium] = useState(false);
+    const [isIndoorStadium, setIsIndoorStadium] = useState(false);
+    const [isCommonRoom, setIsCommonRoom] = useState(false);
+    const [isComputerCenter, setIsComputerCenter] = useState(false);
+    const [isCafeteria, setIsCafeteria] = useState(false);
+    const [isGuestHouse, setIsGuestHouse] = useState(false);
+    const [isseparateRoomForGirls, setIsseparateRoomForGirls] =
+        useState(false);
+    const [isSolarPowerGeneration, setIsSolarPowerGeneration] =
+        useState(false);
+    const [isConnectivityNKN, setIsConnectivityNKN] = useState(false);
+    const [isConnectivityNMEICT, setIsConnectivityNMEICT] =
+        useState(false);
+    const [
+        isCampusIsDifferntlyAbledFriendly,
+        setIsCampusIsDifferntlyAbledFriendly,
+    ] = useState(false);
+    const [
+        isSeparateToiletForDisabledFemale,
+        setIsSeparateToiletForDisabledFemale,
+    ] = useState(false);
+    const [isRampAttachedToClassrooms, setIsRampAttachedToClassrooms] =
+        useState(false);
+    const [isgrievanceRedressalMechanism, setIsgrievanceRedressalMechanism] =
+        useState(false);
+    const [isVigilanceCell, setIsVigilanceCell] = useState(false);
+    const [isEqualOpportunityCell, setIsEqualOpportunityCell] =
+        useState(false);
+    const [isSexualHarassmentCell, setIsSexualHarassmentCell] =
+        useState(false);
+    const [isCounselorsforStudent, setIsCounselorsforStudent] =
+        useState(false);
+    const [isClinic, setIsClinic] = useState(false);
+    const [isSeparateToiletForGirl, setIsSeparateToiletForGirl] =
+        useState(false);
+    const [isSkillDevelopmentCell, setIsSkillDevelopmentCell] =
+        useState(false);
+    const [isSelfDefenceClassesForFemales, setIsSelfDefenceClassesForFemales] =
+        useState(false);
+    const [message, setMessage] = useState("");
+    const [disaster, setDisaster] = useState(false);
+    const [traningProgram, setTraningProgram] = useState(false);
+    const [assessment, setAssessment] = useState(false);
+    const [drill, setDrill] = useState(false);
+
+    useEffect(() => {
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.database();
+        const ref = db.ref("Infrastructure information");
+        ref.on("value", (snapshot) => {
+            const data = snapshot.val();
+            if (!data) {
+                setMessage("No data found");
+                return;
+            }
+            setIsPlayground(data.isPlayground);
+            setIsAuditorium(data.isAuditorium);
+            setIsTheatre(data.isTheatre);
+            setIsLibrary(data.isLibrary);
+            setNumberOfBooks(data.numberOfBooks);
+            setNumberOfJournals(data.numberOfJournals);
+            setIsLaboratory(data.isLaboratory);
+            setIsConferenceHall(data.isConferenceHall);
+            setIsHealthCenter(data.isHealthCenter);
+            setIsGymnasium(data.isGymnasium);
+            setIsIndoorStadium(data.isIndoorStadium);
+            setIsCommonRoom(data.isCommonRoom);
+            setIsComputerCenter(data.isComputerCenter);
+            setIsCafeteria(data.isCafeteria);
+            setIsGuestHouse(data.isGuestHouse);
+            setIsseparateRoomForGirls(data.isseparateRoomForGirls);
+            setIsSolarPowerGeneration(data.isSolarPowerGeneration);
+            setIsConnectivityNKN(data.isConnectivityNKN);
+            setIsConnectivityNMEICT(data.isConnectivityNMEICT);
+            setIsCampusIsDifferntlyAbledFriendly(
+                data.isCampusIsDifferntlyAbledFriendly
+            );
+            setIsSeparateToiletForDisabledFemale(
+                data.isSeparateToiletForDisabledFemale
+            );
+            setIsRampAttachedToClassrooms(data.isRampAttachedToClassrooms);
+            setIsgrievanceRedressalMechanism(
+                data.isgrievanceRedressalMechanism
+            );
+            setIsVigilanceCell(data.isVigilanceCell);
+            setIsEqualOpportunityCell(data.isEqualOpportunityCell);
+            setIsSexualHarassmentCell(data.isSexualHarassmentCell);
+            setIsCounselorsforStudent(data.isCounselorsforStudent);
+            setIsClinic(data.isClinic);
+            setIsSeparateToiletForGirl(data.isSeparateToiletForGirl);
+            setIsSkillDevelopmentCell(data.isSkillDevelopmentCell);
+            setIsSelfDefenceClassesForFemales(
+                data.isSelfDefenceClassesForFemales
+            );
+            setDisaster(data.disaster);
+            setTraningProgram(data.traningProgram);
+            setAssessment(data.assessment);
+            setDrill(data.drill);
+        });
+
+
+    }, []);
+        
+    const handelSave = () => {
+        const db = firebase.database();
+
+        const data = {
+            isPlayground,
+            isAuditorium,
+            isTheatre,
+            isLibrary,
+            numberOfBooks,
+            numberOfJournals,
+            isLaboratory,
+            isConferenceHall,
+            isHealthCenter,
+            isGymnasium,
+            isIndoorStadium,
+            isCommonRoom,
+            isComputerCenter,
+            isCafeteria,
+            isGuestHouse,
+            isseparateRoomForGirls,
+            isSolarPowerGeneration,
+            isConnectivityNKN,
+            isConnectivityNMEICT,
+            isCampusIsDifferntlyAbledFriendly,
+            isSeparateToiletForDisabledFemale,
+            isRampAttachedToClassrooms,
+            isgrievanceRedressalMechanism,
+            isVigilanceCell,
+            isEqualOpportunityCell,
+            isSexualHarassmentCell,
+            isCounselorsforStudent,
+            isClinic,
+            isSeparateToiletForGirl,
+            isSkillDevelopmentCell,
+            isSelfDefenceClassesForFemales,
+        };
+        db.ref("Infrastructure information").push(data);
+
+        setMessage("Data Saved Successfully");
+        setTimeout(() => {
+            setMessage("");
+        }, 3000);
+        window.scrollTo(0, 0);
+    };
 
     return (
         <div>
             <div className="row  comy-4 px-5 py-4 rounded shadow bg-body-tertiary">
-              <h3 className="text-center mb-3">Infrastructure Related Data</h3>
-              <hr />
+                <h3 className="text-center mb-3">
+                    Infrastructure Related Data
+                </h3>
+                <hr />
+                {message && (
+                    <div className="alert alert-success" role="alert">
+                        {message}
+                    </div>
+                )}
                 <div className="col">
                     <div
                         className={
@@ -76,12 +212,16 @@ export default function Infrastructure(props) {
                                 <tr>
                                     <td>2.</td>
                                     <td colSpan={2}>Auditorium</td>
-                                    <td>
+                                    <td
+                                        onClick={() =>
+                                            setIsAuditorium(!isAuditorium)
+                                        }
+                                    >
                                         <input
                                             class="form-check-input"
                                             type="checkbox"
                                             id=""
-                                            value=""
+                                            value={isAuditorium}
                                             aria-label="..."
                                         />
                                     </td>
@@ -89,12 +229,16 @@ export default function Infrastructure(props) {
                                 <tr>
                                     <td>3.</td>
                                     <td colSpan={2}>Theatre</td>
-                                    <td>
+                                    <td
+                                        onClick={() => {
+                                            setIsTheatre(!isTheatre);
+                                        }}
+                                    >
                                         <input
                                             class="form-check-input"
                                             type="checkbox"
                                             id=""
-                                            value=""
+                                            value={isTheatre}
                                             aria-label="..."
                                         />
                                     </td>
@@ -259,7 +403,7 @@ export default function Infrastructure(props) {
                                     <td colSpan={2}>Common Room</td>
                                     <td
                                         onClick={() => {
-                                            setIsAuditorium(!isCommonRoom);
+                                            setIsCommonRoom(!isCommonRoom);
                                         }}
                                     >
                                         <input
@@ -328,6 +472,20 @@ export default function Infrastructure(props) {
                                         />
                                     </td>
                                 </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="col">
+                    <div
+                        className={
+                            !props.aisheReport
+                                ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
+                                : ""
+                        }
+                    >
+                        <table className="table table-bordered table-striped text-center table-hover">
+                            <tbody>
                                 <tr>
                                     <td>14.</td>
                                     <td colSpan={2}>
@@ -351,518 +509,563 @@ export default function Infrastructure(props) {
                                         />
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>15.</td>
+                                    <td colSpan={2}>Solar Power Generation</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsSolarPowerGeneration(
+                                                !isSolarPowerGeneration
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isSolarPowerGeneration}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>16.</td>
+                                    <td colSpan={2}>Connectivity NKN</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsConnectivityNKN(
+                                                !isConnectivityNKN
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isConnectivityNKN}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>17.</td>
+                                    <td colSpan={2}>Connectivity NMEICT</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsConnectivityNMEICT(
+                                                !isConnectivityNMEICT
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isConnectivityNMEICT}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>18.</td>
+                                    <td colSpan={2}>
+                                        Campus is differently abled friendly
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsCampusIsDifferntlyAbledFriendly(
+                                                !isCampusIsDifferntlyAbledFriendly
+                                            );
+                                            setIsSeparateToiletForDisabledFemale(
+                                                false
+                                            );
+                                            setIsRampAttachedToClassrooms(
+                                                false
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={
+                                                isCampusIsDifferntlyAbledFriendly
+                                            }
+                                        />
+                                    </td>
+                                </tr>
+                                {isCampusIsDifferntlyAbledFriendly && (
+                                    <>
+                                        <tr>
+                                            <td></td>
+                                            <td>(i)</td>
+                                            <td>
+                                                Separate toilet for disabled
+                                                female
+                                            </td>
+                                            <td
+                                                onClick={() => {
+                                                    setIsSeparateToiletForDisabledFemale(
+                                                        !isSeparateToiletForDisabledFemale
+                                                    );
+                                                }}
+                                            >
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id=""
+                                                    value=""
+                                                    aria-label="..."
+                                                    // checked={!isCampusIsDifferntlyAbledFriendly ? (!isSeparateToiletForDisabledFemale)}
+                                                    checked={
+                                                        isSeparateToiletForDisabledFemale
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>(ii)</td>
+                                            <td>
+                                                Ramp attached to classroom /
+                                                library
+                                            </td>
+                                            <td
+                                                onClick={() => {
+                                                    setIsRampAttachedToClassrooms(
+                                                        !isRampAttachedToClassrooms
+                                                    );
+                                                }}
+                                            >
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    id=""
+                                                    value=""
+                                                    aria-label="..."
+                                                    checked={
+                                                        isRampAttachedToClassrooms
+                                                    }
+                                                />
+                                            </td>
+                                        </tr>
+                                    </>
+                                )}
+
+                                <tr>
+                                    <td>19.</td>
+                                    <td colSpan={2}>
+                                        Grievance Redressal Mechanism
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsgrievanceRedressalMechanism(
+                                                !isgrievanceRedressalMechanism
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={
+                                                isgrievanceRedressalMechanism
+                                            }
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>20.</td>
+                                    <td colSpan={2}>Vigilance Cell</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsVigilanceCell(
+                                                !isVigilanceCell
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isVigilanceCell}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>21.</td>
+                                    <td colSpan={2}>Equal Opportunity Cell</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsEqualOpportunityCell(
+                                                !isEqualOpportunityCell
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isEqualOpportunityCell}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>22.</td>
+                                    <td colSpan={2}>
+                                        Sexual harassment / anti-ragging cell
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsSexualHarassmentCell(
+                                                !isSexualHarassmentCell
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isSexualHarassmentCell}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>23.</td>
+                                    <td colSpan={2}>Counselors for students</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsCounselorsforStudent(
+                                                !isCounselorsforStudent
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isCounselorsforStudent}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>24.</td>
+                                    <td colSpan={2}>Clinic / first-aid room</td>
+                                    <td
+                                        onClick={() => {
+                                            setIsClinic(!isClinic);
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isClinic}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>25.</td>
+                                    <td colSpan={2}>
+                                        Separate toilet for girls
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsSeparateToiletForGirl(
+                                                !isSeparateToiletForGirl
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isSeparateToiletForGirl}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>26.</td>
+                                    <td colSpan={2}>
+                                        Skill development centre
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsSkillDevelopmentCell(
+                                                !isSkillDevelopmentCell
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={isSkillDevelopmentCell}
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>27.</td>
+                                    <td colSpan={2}>
+                                        Self-defence class for females
+                                    </td>
+                                    <td
+                                        onClick={() => {
+                                            setIsSelfDefenceClassesForFemales(
+                                                !isSelfDefenceClassesForFemales
+                                            );
+                                        }}
+                                    >
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            id=""
+                                            value=""
+                                            aria-label="..."
+                                            checked={
+                                                isSelfDefenceClassesForFemales
+                                            }
+                                        />
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <div className="col" >
-                  <div className={
-                            !props.aisheReport
-                                ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
-                                : ""
-                        }>
-                    <table className="table table-bordered table-striped text-center table-hover">
+                <hr className="mt-5" />
+                <div
+                    className={
+                        !props.aisheReport
+                            ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
+                            : ""
+                    }
+                >
+                    <table class="table table-borderless">
                         <tbody>
                             <tr>
-                                <td>15.</td>
-                                <td colSpan={2}>Solar Power Generation</td>
-                                <td
-                                    onClick={() => {
-                                        setIsSolarPowerGeneration(
-                                            !isSolarPowerGeneration
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isSolarPowerGeneration}
-                                    />
+                                <td className="" style={{ width: "10%" }}>
+                                    B.
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>16.</td>
-                                <td colSpan={2}>Connectivity NKN</td>
-                                <td
-                                    onClick={() => {
-                                        setIsConnectivityNKN(
-                                            !isConnectivityNKN
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isConnectivityNKN}
-                                    />
+                                <td style={{ width: "50%" }}>
+                                    Whether the University / Institution have
+                                    Disaster Management facilities.
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>17.</td>
-                                <td colSpan={2}>Connectivity NMEICT</td>
-                                <td
-                                    onClick={() => {
-                                        setIsConnectivityNMEICT(
-                                            !isConnectivityNMEICT
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isConnectivityNMEICT}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>18.</td>
-                                <td colSpan={2}>
-                                    Campus is differently abled friendly
-                                </td>
-                                <td
-                                    onClick={() => {
-                                        setIsCampusIsDifferntlyAbledFriendly(
-                                            !isCampusIsDifferntlyAbledFriendly
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={
-                                            isCampusIsDifferntlyAbledFriendly
-                                        }
-                                    />
-                                </td>
-                            </tr>
-                            {isCampusIsDifferntlyAbledFriendly && (
-                                <>
-                                    <tr>
-                                        <td></td>
-                                        <td>(i)</td>
-                                        <td>
-                                            Separate toilet for disabled female
-                                        </td>
-                                        <td
-                                            onClick={() => {
-                                                setIsSeparateToiletForDisabledFemale(
-                                                    !isSeparateToiletForDisabledFemale
-                                                );
-                                            }}
+                                <td style={{ wdth: "20%" }}>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B1"
+                                            id="disasterYes"
+                                            onChange={(e) => setDisaster(true)}
+                                            required
+                                            checked={disaster}
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="disasterYes"
                                         >
-                                            <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                id=""
-                                                value=""
-                                                aria-label="..."
-                                                // checked={!isCampusIsDifferntlyAbledFriendly ? (!isSeparateToiletForDisabledFemale)}
-                                                // checked={isSeparateToiletForDisabledFemale}
-                                            />
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td></td>
-                                        <td>(ii)</td>
-                                        <td>
-                                            Ramp attached to classroom / library
-                                        </td>
-                                        <td
-                                            onClick={() => {
-                                                setIsRampAttachedToClassrooms(
-                                                    !isRampAttachedToClassrooms
-                                                );
-                                            }}
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B1"
+                                            id="disasterNo"
+                                            onChange={(e) => setDisaster(false)}
+                                            required
+                                            value="no"
+                                            checked={!disaster}
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="disasterNo"
                                         >
-                                            <input
-                                                class="form-check-input"
-                                                type="checkbox"
-                                                id=""
-                                                value=""
-                                                aria-label="..."
-                                                // checked={isRampAttachedToClassrooms}
-                                            />
-                                        </td>
-                                    </tr>
-                                </>
-                            )}
+                                            No
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="" style={{ width: "10%" }}>
+                                    (i)
+                                </td>
+                                <td style={{ width: "50%" }}>
+                                    Whether capacity Building and
+                                    Training/awareness programmes conducted.
+                                </td>
+                                <td style={{ wdth: "20%" }}>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B2"
+                                            id="traningProgramYes"
+                                            value="yes"
+                                            onChange={(e) => setTraningProgram(true)}
+                                            required
+                                            checked={traningProgram}
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="traningProgramYes"
+                                        >
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B2"
+                                            id="traningProgramNo"
+                                            onChange={(e) => setTraningProgram(false)}
+                                            required
+                                            value="no"
+                                            checked={!traningProgram}
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="traningProgramNo"
+                                        >
+                                            No
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="" style={{ width: "10%" }}>
+                                    (ii)
+                                </td>
+                                <td style={{ width: "50%" }}>
+                                    Whether vulnerability assessment checks were
+                                    made during the year.
+                                </td>
+                                <td style={{ wdth: "20%" }}>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B3"
+                                            id="assessmentYes"
+                                            onChange={(e) => setAssessment(true)}
+                                            value="yes"
+                                            checked={assessment}
+                                            required
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="assessmentYes"
+                                        >
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B3"
+                                            onChange={(e) => setAssessment(false)}
+                                            id="assessmentNo"
+                                            required
+                                            value="no"
+                                            checked={!assessment}
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="assessmentNo"
+                                        >
+                                            No
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
 
                             <tr>
-                                <td>19.</td>
-                                <td colSpan={2}>
-                                    Grievance Redressal Mechanism
+                                <td className="" style={{ width: "10%" }}>
+                                    (ii)
                                 </td>
-                                <td
-                                    onClick={() => {
-                                        setIsgrievanceRedressalMechanism(
-                                            !isgrievanceRedressalMechanism
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isgrievanceRedressalMechanism}
-                                    />
+                                <td style={{ width: "50%" }}>
+                                    Is any mock drill or rehearsal programme
+                                    conducted.
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>20.</td>
-                                <td colSpan={2}>Vigilance Cell</td>
-                                <td
-                                    onClick={() => {
-                                        setIsVigilanceCell(
-                                            !isVigilanceCell
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isVigilanceCell}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>21.</td>
-                                <td colSpan={2}>Equal Opportunity Cell</td>
-                                <td
-                                    onClick={() => {
-                                        setIsEqualOpportunityCell(
-                                            !isEqualOpportunityCell
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isEqualOpportunityCell}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>22.</td>
-                                <td colSpan={2}>Sexual harassment / anti-ragging cell</td>
-                                <td
-                                    onClick={() => {
-                                        setIsSexualHarassmentCell(
-                                            !isSexualHarassmentCell
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isSexualHarassmentCell}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>23.</td>
-                                <td colSpan={2}>Counselors for students</td>
-                                <td
-                                    onClick={() => {
-                                        setIsCounselorsforStudent(
-                                            !isCounselorsforStudent
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isCounselorsforStudent}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>24.</td>
-                                <td colSpan={2}>Clinic / first-aid room</td>
-                                <td
-                                    onClick={() => {
-                                        setIsClinic(
-                                            !isClinic
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isClinic}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>25.</td>
-                                <td colSpan={2}>Separate toilet for girls</td>
-                                <td
-                                    onClick={() => {
-                                        setIsSeparateToiletForGirl(
-                                            !isSeparateToiletForGirl
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isSeparateToiletForGirl}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>26.</td>
-                                <td colSpan={2}>Skill development centre</td>
-                                <td
-                                    onClick={() => {
-                                      setIsSkillDevelopmentCell(
-                                            !isSkillDevelopmentCell
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isSkillDevelopmentCell}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>27.</td>
-                                <td colSpan={2}>Self-defence class for females</td>
-                                <td
-                                    onClick={() => {
-                                      setIsSelfDefenceClassesForFemales(
-                                            !isSelfDefenceClassesForFemales
-                                        );
-                                    }}
-                                >
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        id=""
-                                        value=""
-                                        aria-label="..."
-                                        checked={isSelfDefenceClassesForFemales}
-                                    />
+                                <td style={{ wdth: "20%" }}>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="B4"
+                                            onChange={(e) => setDrill(true)}
+                                            id="drillYes"
+                                            value="yes"
+                                            checked={drill}
+                                            required
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="drillYes"
+                                        >
+                                            Yes
+                                        </label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            onChange={(e) => setDrill(false)}
+                                            checked={!drill}
+                                            name="B4"
+                                            id="drillNo"
+                                            required
+                                            value="no"
+                                        />
+                                        <label
+                                            className="form-check-label"
+                                            htmlFor="drillNo"
+                                        >
+                                            No
+                                        </label>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <div className="text-end">
+                    {(!props.aisheReport) && (
+                        <button
+                            type="button"
+                            class="btn btn-outline-success px-4"
+                            onClick={handelSave}
+                        >
+                            Save
+                        </button>
+                    )}
                     </div>
                 </div>
-                <hr className="mt-5"/>
-                <div className={
-                  !props.aisheReport
-                                ? "container comy-4 px-5 py-4 rounded shadow bg-body-tertiary"
-                                : ""
-                        }>
-                <table class="table table-borderless">
-                  <tbody>
-                    <tr>
-                      <td className="" style={{width:"10%"}}>B.</td>
-                      <td style={{width:"50%"}}>Whether the University / Institution have Disaster Management facilities.</td>
-                      <td style={{wdth:"20%"}}>
-                      
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B1"
-                                id=""
-                                value="yes"
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                            />
-                            <label className="form-check-label" htmlFor="yes">
-                                Yes
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B1"
-                                id=""
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                                value="no"
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="no"
-                            >
-                                No
-                            </label>
-                        </div>
-                    
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                    <tr>
-                      <td className="" style={{width:"10%"}}>(i)</td>
-                      <td style={{width:"50%"}}>Whether capacity Building and Training/awareness programmes conducted.</td>
-                      <td style={{wdth:"20%"}}>
-                      
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B2"
-                                id=""
-                                value="yes"
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                            />
-                            <label className="form-check-label" htmlFor="yes">
-                                Yes
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B2"
-                                id=""
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                                value="no"
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="no"
-                            >
-                                No
-                            </label>
-                        </div>
-                    
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="" style={{width:"10%"}}>(ii)</td>
-                      <td style={{width:"50%"}}>Whether vulnerability assessment checks were made during the year.</td>
-                      <td style={{wdth:"20%"}}>
-                      
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B3"
-                                id=""
-                                value="yes"
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                            />
-                            <label className="form-check-label" htmlFor="yes">
-                                Yes
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B3"
-                                id=""
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                                value="no"
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="no"
-                            >
-                                No
-                            </label>
-                        </div>
-                    
-                      </td>
-                    </tr>
-                    
-                    <tr>
-                      <td className="" style={{width:"10%"}}>(ii)</td>
-                      <td style={{width:"50%"}}>Is any mock drill or rehearsal programme conducted.</td>
-                      <td style={{wdth:"20%"}}>
-                      
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B4"
-                                id=""
-                                value="yes"
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                            />
-                            <label className="form-check-label" htmlFor="yes">
-                                Yes
-                            </label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input
-                                className="form-check-input"
-                                type="radio"
-                                name="B4"
-                                id=""
-                                // onChange={(e) => setGender(e.target.value)}
-                                required
-                                value="no"
-                            />
-                            <label
-                                className="form-check-label"
-                                htmlFor="no"
-                            >
-                                No
-                            </label>
-                        </div>
-                    
-                      </td>
-                    </tr>
-                    
-                  </tbody>
-                </table>
-                          </div>
-  
-
             </div>
-            
         </div>
     );
 }

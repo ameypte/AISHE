@@ -3,6 +3,8 @@ import BasicInfo from "../components/basic/Form";
 import Departments from "./Departments";
 import Financials from "./Financials";
 import Table from "../components/Table";
+import Infrastructure from "./Infrastructure";
+import Frontpage from "./Frontpage";
 
 export default function Aishereport() {
     const [staffData, setStaffData] = useState([]);
@@ -31,7 +33,9 @@ export default function Aishereport() {
 
     return (
         <div className="p-3">
-            <BasicInfo aisheReport={true} />
+            <Frontpage />
+            
+            <div className="mt-2"><BasicInfo aisheReport={true} /></div>
             <hr />
             <div className="text-center">
                 <h2>Financial Information</h2>
@@ -54,6 +58,11 @@ export default function Aishereport() {
                 <h2 className="mb-3">Result Information</h2>
                 <Table data={resultData} />
             </div>
+            <hr />
+            <div className="text-center">
+                {/* <h2 className="mb-3">Infrastructure Information</h2> */}
+                <Infrastructure aisheReport={true} />
+                </div>
         </div>
     );
 }

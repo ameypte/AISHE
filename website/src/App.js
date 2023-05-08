@@ -13,6 +13,8 @@ import Sidebar from "./components/SideBar";
 import Departments from "./pages/Departments";
 import AisheReport from "./pages/Aishereport";
 import Infrastructure from "./pages/Infrastructure";
+import Frontpage from "./pages/Frontpage";
+
 
 const router = createBrowserRouter([
   {
@@ -22,6 +24,11 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  
+  {
+    path: "/frontpage",
+    element: <Frontpage />,
   },
   {
     path: "/dashboard",
