@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
 
 export default function Table(props) {
     const data = props.data;
+    const tableRef = useRef(null);
+
 
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
+    const rowCount = tableRef.current ? tableRef.current.rows.length : 0;
 
     return (
         <div>
-            <table className="table table-bordered table-striped rounded">
+            <div className="ts">{rowCount} Records Retrived</div>
+            <table className="table table-bordered table-striped rounded" ref={tableRef}>
                 <thead>
                     <tr className="text-center">
                         {columns.map((col) => (
@@ -25,6 +29,7 @@ export default function Table(props) {
                     ))}
                 </tbody>
             </table>
+            
         </div>
     );
 }

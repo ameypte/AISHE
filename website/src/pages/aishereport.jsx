@@ -11,7 +11,6 @@ export default function Aishereport() {
     const [studentData, setStudentData] = useState([]);
     const [resultData, setResultData] = useState([]);
     useEffect(() => {
-        
         fetch("http://localhost:5000/staff")
             .then((res) => res.json())
             .then((data) => {
@@ -34,8 +33,8 @@ export default function Aishereport() {
     return (
         <div className="p-3">
             <Frontpage />
-            
-            <div className="mt-2"><BasicInfo aisheReport={true} /></div>
+
+            <BasicInfo aisheReport={true} />
             <hr />
             <div className="text-center">
                 <h2>Financial Information</h2>
@@ -46,23 +45,26 @@ export default function Aishereport() {
             <hr />
             <div className="text-center">
                 <h2 className="mb-3">Staff Information</h2>
-                <Table data={staffData} />
             </div>
+            <Table data={staffData} />
+
             <hr />
             <div className="text-center">
                 <h2 className="mb-3">Student Information</h2>
-                <Table data={studentData} />
             </div>
+            <Table data={studentData} />
+
             <hr />
             <div className="text-center">
                 <h2 className="mb-3">Result Information</h2>
-                <Table data={resultData} />
             </div>
+            <Table data={resultData} />
+
             <hr />
             <div className="text-center">
                 {/* <h2 className="mb-3">Infrastructure Information</h2> */}
                 <Infrastructure aisheReport={true} />
-                </div>
+            </div>
         </div>
     );
 }

@@ -40,7 +40,7 @@ export default function Frontpage() {
 
                 </h4>
             </div>
-            <div className="text-center">
+            <div className="mb-2 ms-5 text-center">
                 <img
                     src={logo2}
                     alt="logo"

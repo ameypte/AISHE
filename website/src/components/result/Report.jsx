@@ -8,6 +8,7 @@ export default function Report() {
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
     const [message, setMessage] = useState(null);
 
+
     const [progCharCodes, setProgCharCodes] = useState([
         "IF",
         "CM",
@@ -17,6 +18,10 @@ export default function Report() {
         "CH",
         "EC",
         "EE",
+    ]);
+    const [percent, setPercent] = useState([
+        "Above 60%",
+        "Below 60%",
     ]);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -110,6 +115,23 @@ export default function Report() {
                         </select>
                     </div>
                     <div className="form-group mb-3 col-lg-4">
+                        <label htmlFor="percent" className="form-label">
+                            Percent
+                        </label>
+                        <select
+                            name="percent"
+                            id="percent"
+                            className="form-select"
+                            onChange={(e) => setPercent(e.target.value)}
+                        >
+                            {percent.map((p) => (
+                                <option key={p} value={p}>
+                                    {p}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group mb-3 col-lg-4">
                         <label htmlFor="student" className="form-label">
                             Student Id Code
                         </label>
@@ -134,7 +156,7 @@ export default function Report() {
                             </button>
                         ) : (
                             <button
-                                className="btn btn-danger"
+                                className="btn btn-danger "
                                 onClickCapture={handelGenerate}
                             >
                                 Generate
