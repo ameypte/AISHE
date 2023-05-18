@@ -4,7 +4,7 @@ import logo2 from "../assets/swatchbharat.png";
 
 export default function Frontpage() {
     return (
-        <div>
+        <div className="mb-5">
             <div className=" mt-2 text-center">
                 <h2>ALL INDIA SURVEY ON HIGHER EDUCATION.</h2>
             </div>

@@ -21,28 +21,26 @@ export default function Login() {
         setIsLoading(true);
         firebase
             .database()
-            .ref("Departments")
+            .ref("Users")
             .once("value", (snapshot) => {
                 const data = snapshot.val();
-                for (const dept in data) {
-                    for (const role in data[dept]) {
-                        if (data[dept][role][phone]) {
-                            setIsFound(true);
-                            if (data[dept][role][phone].password === password) {
-                                localStorage.setItem("user", phone);
-                                localStorage.setItem("role", role);
-                                localStorage.setItem("dept", dept);
-                                navigate("dashboard");
-                                setIsLoading(false);
-                                return;
-                            }
-                            setMessage("Incorrect Password");
+                for (let key in data) {
+                    setIsFound(true);
+                    if(key == phone){
+                        if(data[key].password == password){
                             setIsLoading(false);
-                            return;
+                            localStorage.setItem("user", phone);
+                            localStorage.setItem("name", data[key].name);
+                            localStorage.setItem("role", data[key].role);
+                            navigate("/dashboard");
+                        }
+                        else{
+                            setIsLoading(false);
+                            setMessage("Incorrect Password");
                         }
                     }
                 }
-                if (!isFound) {
+                if (isFound) {
                     setMessage("User not found");
                     setIsLoading(false);
                 }

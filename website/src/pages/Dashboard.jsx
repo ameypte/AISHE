@@ -8,27 +8,18 @@ import {useNavigate} from "react-router-dom"
 export default function Dashboard() {
     const user = localStorage.getItem("user");
     const role = localStorage.getItem("role");
-    const dept = localStorage.getItem("dept");
-    const [name, setName] = useState();
+    const n = localStorage.getItem("name");
+    const [name, setName] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
-
         const isUserLoggedIn = isLoggedIn();
         if (!isUserLoggedIn) {
             window.location.href = "/";
             return null;
         }
-        const userRef = firebase
-            .database()
-            .ref("Departments")
-            .child(dept)
-            .child(role)
-            .child(user);
-        const userData = userRef.on("value", (snapshot) => {
-            setName(snapshot.val().name);
-        });
+        setName(n);
     }, []);
 
     return (
@@ -58,7 +49,10 @@ export default function Dashboard() {
                 </p>
             </div>
             <div className="text-end">
-                <button type="button" onClick={()=>{navigate("/aishe-report")}}class="btn btn-outline-success">
+                
+                <button type="button" onClick={()=>{navigate("/aishe-report")}}class="btn btn-outline-success"
+                disabled={role === "Principle" ? false : true}
+                >
                     Generate Report
                 </button>
             </div>

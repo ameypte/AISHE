@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 export default function Report() {
     const [data, setData] = useState([]);
+    const tableRef = useRef(null);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
     const [message, setMessage] = useState(null);
-
+    const [rowCount, setRowCount] = useState(0);
+    const [selectedPercent, setSelectedPercent] = useState("All");
 
     const [progCharCodes, setProgCharCodes] = useState([
+        "All",
         "IF",
         "CM",
         "CE",
@@ -19,13 +22,10 @@ export default function Report() {
         "EC",
         "EE",
     ]);
-    const [percent, setPercent] = useState([
-        "Above 60%",
-        "Below 60%",
-    ]);
+    const [percent, setPercent] = useState(["All", "Above 60%", "Below 60%"]);
 
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedProgram, setSelectedProgram] = useState("IF");
+    const [selectedProgram, setSelectedProgram] = useState("All");
     const [student, setStudent] = useState("");
 
     const handelGenerate = async (e) => {
@@ -34,6 +34,7 @@ export default function Report() {
         const requestDate = {
             program_char_code: selectedProgram,
             studentId: student,
+            percent: selectedPercent,
         };
         try {
             const response = await fetch("http://localhost:5000/resultreport", {
@@ -50,6 +51,7 @@ export default function Report() {
             }
             console.log(responseData);
             setData(responseData);
+            setRowCount(responseData.length);
             setMessage("Report generated successfully");
         } catch (error) {
             setMessage("Error: " + error.message);
@@ -122,7 +124,7 @@ export default function Report() {
                             name="percent"
                             id="percent"
                             className="form-select"
-                            onChange={(e) => setPercent(e.target.value)}
+                            onChange={(e) => setSelectedPercent(e.target.value)}
                         >
                             {percent.map((p) => (
                                 <option key={p} value={p}>
@@ -166,9 +168,9 @@ export default function Report() {
                 </form>
                 <hr />
                 {data.length > 0 && (
-                    <h3 className="mb-3">
+                    <div className="mb-3">
                         <div className="row">
-                            <div className="col">Generated Report</div>
+                            <h3 className="col">Generated Report</h3>
                             <div className="col text-end">
                                 <button
                                     className="btn mx-3 btn-success"
@@ -184,7 +186,8 @@ export default function Report() {
                                 </button>
                             </div>
                         </div>
-                    </h3>
+                        <h5>Total records: {rowCount}</h5>
+                    </div>
                 )}
                 <div className="container">
                     {data.length > 0 && (
@@ -192,7 +195,10 @@ export default function Report() {
                             className="table-responsive"
                             style={{ maxHeight: "500px", overflow: "auto" }}
                         >
-                            <table className="table table-bordered table-striped rounded">
+                            <table
+                                className="table table-bordered table-striped rounded"
+                                ref={tableRef}
+                            >
                                 <thead>
                                     <tr className="text-center">
                                         {columns.map((col) => (

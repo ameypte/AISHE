@@ -39,8 +39,8 @@ def upload():
 def report():
     try:
         program_char_code = request.json['program_char_code']
-        # studentId is optional, so use .get()
         student_id = request.json.get('studentId')
+        percentage = request.json.get('percentage')
 
         ref = db.reference('Result information')
         data = ref.get()
@@ -48,19 +48,29 @@ def report():
         if data is None:
             return jsonify({'message': 'No data found'}), 404
 
-        filtered_data = [student for student in data if student.get(
-            'program_char_code') == program_char_code]
+        if program_char_code == 'All':
+            filtered_data = data
+        else:
+            filtered_data = [student for student in data if student.get('program_char_code') == program_char_code]
 
         if not filtered_data:
             return jsonify({'message': 'No data found for the specified program_char_code'}), 404
 
         if student_id:
-            student_data = [student for student in filtered_data if student.get(
-                'reg_no') == student_id]
-            if student_data:
-                return jsonify(student_data)
-            else:
+            student_data = [student for student in filtered_data if student.get('reg_no') == student_id]
+            if not student_data:
                 return jsonify({'message': 'No data found for the specified student ID'}), 404
+            filtered_data = student_data
+
+        if percentage:
+            if percentage == 'All':
+                pass  # No filtering required
+            elif percentage == 'Above 60%':
+                filtered_data = [student for student in filtered_data if student.get('percentage') > 0.60]
+            elif percentage == 'Below 60%':
+                filtered_data = [student for student in filtered_data if student.get('percentage') < 0.60]
+            else:
+                return jsonify({'message': 'Invalid percentage value'}), 400
 
         return jsonify(filtered_data)
     except Exception as e:
@@ -109,6 +119,9 @@ def studentreport():
 
         if data is None:
             return jsonify({'message': 'No data found'}), 404
+        
+        if category == 'All':
+            return jsonify(data)
 
         filtered_data = [student for student in data if student.get(
             'Category') == category]
@@ -147,7 +160,6 @@ def result():
     ref = db.reference('Result information')
     data = ref.get()
     return jsonify(data)
-
 
 @app.route('/clearresult')
 def clear():

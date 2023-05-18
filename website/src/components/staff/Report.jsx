@@ -11,8 +11,9 @@ export default function Report() {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
-    const [designation, setDesignation] = useState([""]);
+    const [designation, setDesignation] = useState([]);
     const [selectedDesignation, setSelectedDesignation] = useState("");
+    const [rowCount, setRowCount] = useState(0);
 
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
@@ -24,6 +25,7 @@ export default function Report() {
                 designation.push(data[i].Designation);
             }
             setDesignation([...new Set(designation)]);
+            setSelectedDesignation(designation[0]);
         });
     }, []);
         
@@ -71,6 +73,7 @@ export default function Report() {
             }
             console.log(responseData);
             setData(responseData);
+            setRowCount(responseData.length);
             setMessage("Report generated successfully");
         } catch (error) {
             setMessage("Error: " + error.message);
@@ -104,6 +107,7 @@ export default function Report() {
                         name="designation"
                         id="designation"
                         className="form-select"
+                        value={selectedDesignation}
                         onChange={(e) => setSelectedDesignation(e.target.value)}
                     >
                         {designation.map((d) => (
@@ -177,31 +181,36 @@ export default function Report() {
                         </button>
                     ) : (
                         <button className="btn btn-danger">Generate</button>
+                        
                     )}
                 </div>
+
             </form>
             <hr />
             {data.length > 0 && (
-                <h3 className="mb-3">
-                    <div className="row">
-                        <div className="col">Generated Report</div>
-                        <div className="col text-end">
-                            <button
-                                className="btn mx-3 btn-success"
-                                onClick={handleExcelDownload}
-                            >
-                                Download Excel
-                            </button>
-                            <button
-                                className="btn  btn-success"
-                                onClick={handlePDFDownload}
-                            >
-                                Download PDF
-                            </button>
+                    <div className="mb-3">
+                        <div className="row">
+                            <h3 className="col">Generated Report</h3>
+                            <div className="col text-end">
+                                <button
+                                    className="btn mx-3 btn-success"
+                                    onClick={handleExcelDownload}
+                                >
+                                    Download Excel
+                                </button>
+                                <button
+                                    className="btn  btn-success"
+                                    onClick={handlePDFDownload}
+                                >
+                                    Download PDF
+                                </button>
+                            </div>
                         </div>
+                        <h5>Total records: {rowCount}</h5>
                     </div>
-                </h3>
+                
             )}
+            
             <div className="container">
                 {data.length > 0 && (
                     <div

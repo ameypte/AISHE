@@ -60,7 +60,6 @@ export default function Infrastructure(props) {
 
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
-
         const db = firebase.database();
         const ref = db.ref("Infrastructure information");
         ref.on("value", (snapshot) => {
@@ -113,13 +112,10 @@ export default function Infrastructure(props) {
             setAssessment(data.assessment);
             setDrill(data.drill);
         });
-
-
     }, []);
         
     const handelSave = () => {
         const db = firebase.database();
-
         const data = {
             isPlayground,
             isAuditorium,
@@ -153,6 +149,7 @@ export default function Infrastructure(props) {
             isSkillDevelopmentCell,
             isSelfDefenceClassesForFemales,
         };
+        alert(JSON.stringify(data));
         db.ref("Infrastructure information").push(data);
 
         setMessage("Data Saved Successfully");

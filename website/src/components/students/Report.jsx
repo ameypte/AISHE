@@ -14,6 +14,7 @@ export default function Report() {
     const [selectedGender, setSelectedGender] = useState("");
     const [data, setData] = useState([]);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
+    const [rowCount, setRowCount] = useState(0);
 
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
@@ -24,7 +25,9 @@ export default function Report() {
             for (let i in data) {
                 category.push(data[i].Category);
             }
+            category.push("All");
             setCategory([...new Set(category)]);
+            setSelectedCategory("All");
         });
     }, []);
 
@@ -55,6 +58,7 @@ export default function Report() {
             }
             console.log(responseData);
             setData(responseData);
+            setRowCount(responseData.length);
             setMessage("Report generated successfully");
         } catch (error) {
             setMessage("Error: " + error.message);
@@ -108,6 +112,7 @@ export default function Report() {
                         name="category"
                         id="category"
                         className="form-select"
+                        value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                         {category.map((cat) => (
@@ -154,25 +159,26 @@ export default function Report() {
             </form>
             <hr />
             {data.length > 0 && (
-                <h3 className="mb-3">
-                    <div className="row">
-                        <div className="col">Generated Report</div>
-                        <div className="col text-end">
-                            <button
-                                className="btn mx-3 btn-success"
-                                onClick={handleExcelDownload}
-                            >
-                                Download Excel
-                            </button>
-                            <button
-                                className="btn  btn-success"
-                                onClick={handlePDFDownload}
-                            >
-                                Download PDF
-                            </button>
+                    <div className="mb-3">
+                        <div className="row">
+                            <h3 className="col">Generated Report</h3>
+                            <div className="col text-end">
+                                <button
+                                    className="btn mx-3 btn-success"
+                                    onClick={handleExcelDownload}
+                                >
+                                    Download Excel
+                                </button>
+                                <button
+                                    className="btn  btn-success"
+                                    onClick={handlePDFDownload}
+                                >
+                                    Download PDF
+                                </button>
+                            </div>
                         </div>
+                        <h5>Total records: {rowCount}</h5>
                     </div>
-                </h3>
             )}
             <div className="container">
                 {data.length > 0 && (

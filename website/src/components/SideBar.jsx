@@ -19,7 +19,7 @@ export default function SideBar({ children }) {
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("role");
-    localStorage.removeItem("dept");
+    localStorage.removeItem("name");
   };
 
   const menuItems = [
@@ -70,6 +70,29 @@ export default function SideBar({ children }) {
       onClick: logout,
     },
   ];
+
+  if (localStorage.getItem("role") === "Account Section") {
+    menuItems.splice(1, 3);    
+    menuItems.splice(2, 2);
+    // menuItems.splice(3, 1);
+  }
+
+  if (localStorage.getItem("role") === "Student Section") {
+    menuItems.splice(1, 1);
+    menuItems.splice(3, 4);
+  }
+
+  if (localStorage.getItem("role") === "Examination Section") {
+    menuItems.splice(1, 1);
+    menuItems.splice(2, 3);
+    menuItems.splice(3, 1);
+  }
+
+  if (localStorage.getItem("role") === "COE") {
+    menuItems.splice(1, 1);
+    menuItems.splice(3, 1);
+    menuItems.splice(4, 2);
+  }
 
   return (
     <div className="con">
