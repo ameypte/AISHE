@@ -10,6 +10,8 @@ export default function Report() {
     const [message, setMessage] = useState(null);
     const [rowCount, setRowCount] = useState(0);
     const [selectedPercent, setSelectedPercent] = useState("All");
+    const [selectedCsategory, setSelectedCategory] = useState("All");
+    const [category, setCategory] = useState(["All", "Open", "OBC", "SC", "ST"]);
 
     const [progCharCodes, setProgCharCodes] = useState([
         "All",
@@ -22,7 +24,7 @@ export default function Report() {
         "EC",
         "EE",
     ]);
-    const [percent, setPercent] = useState(["All", "Above 60%", "Below 60%"]);
+    const [percent, setPercent] = useState(["All", "Above 60%", "Below 60%", "Above 75%"]);
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedProgram, setSelectedProgram] = useState("All");
@@ -35,6 +37,7 @@ export default function Report() {
             program_char_code: selectedProgram,
             studentId: student,
             percent: selectedPercent,
+            category: selectedCsategory,
         };
         try {
             const response = await fetch("http://localhost:5000/resultreport", {
@@ -124,11 +127,30 @@ export default function Report() {
                             name="percent"
                             id="percent"
                             className="form-select"
+                            value={selectedPercent}
                             onChange={(e) => setSelectedPercent(e.target.value)}
                         >
                             {percent.map((p) => (
                                 <option key={p} value={p}>
                                     {p}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group mb-3 col-lg-4">
+                        <label htmlFor="category" className="form-label">
+                            Select Category
+                        </label>
+                        <select
+                            name="category"
+                            id="category"
+                            value={selectedCsategory}
+                            className="form-select"
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                        >
+                            {category.map((c) => (
+                                <option key={c} value={c}>
+                                    {c}
                                 </option>
                             ))}
                         </select>

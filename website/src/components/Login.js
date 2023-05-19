@@ -19,6 +19,8 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setIsFound(false);
+        
         firebase
             .database()
             .ref("Users")
@@ -34,14 +36,13 @@ export default function Login() {
                             localStorage.setItem("role", data[key].role);
                             navigate("/dashboard");
                         }
-                        else{
-                            setIsLoading(false);
-                            setMessage("Incorrect Password");
-                        }
                     }
                 }
-                if (isFound) {
+                if (!isFound) {
                     setMessage("User not found");
+                    setIsLoading(false);
+                }else{
+                    setMessage("Incorrect Password");
                     setIsLoading(false);
                 }
             });
