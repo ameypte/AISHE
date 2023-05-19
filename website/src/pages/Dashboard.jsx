@@ -11,7 +11,7 @@ export default function Dashboard() {
     const n = localStorage.getItem("name");
     const [name, setName] = useState("");
     const navigate = useNavigate();
-
+    
     useEffect(() => {
         firebase.initializeApp(firebaseConfig);
         const isUserLoggedIn = isLoggedIn();
