@@ -122,6 +122,92 @@ export default function Report() {
         }
     };
 
+    const handleSlatExcelDownload = () => {
+        const workbook = XLSX.utils.book_new();
+        const sheetData = slatData.map(item => {
+          return {
+            Program: item.program,
+            "General M": item.genM,
+            "General F": item.genF,
+            "General O": item.genO,
+            "EWS M": item.ewsM,
+            "EWS F": item.ewsF,
+            "EWS O": item.ewsO,
+            "SC M": item.scM,
+            "SC F": item.scF,
+            "SC O": item.scO,
+            "ST M": item.stM,
+            "ST F": item.stF,
+            "ST O": item.stO,
+            "OBC M": item.obcM,
+            "OBC F": item.obcF,
+            "OBC O": item.obcO,
+            "Total M": item.totalM,
+            "Total F": item.totalF,
+            "Total O": item.totalO
+          };
+        });
+        const sheet = XLSX.utils.json_to_sheet(sheetData);
+        XLSX.utils.book_append_sheet(workbook, sheet, "Slat");
+        XLSX.writeFile(workbook, "slat.xlsx");
+      };
+      
+
+      const handleSlatPDFDownload = () => {
+        const doc = new jsPDF();
+        const columns = [
+          "Program",
+          "General M",
+          "General F",
+          "General O",
+          "EWS M",
+          "EWS F",
+          "EWS O",
+          "SC M",
+          "SC F",
+          "SC O",
+          "ST M",
+          "ST F",
+          "ST O",
+          "OBC M",
+          "OBC F",
+          "OBC O",
+          "Total M",
+          "Total F",
+          "Total O"
+        ];
+        const rows = slatData.map(item => [
+          item.program,
+          item.genM,
+          item.genF,
+          item.genO,
+          item.ewsM,
+          item.ewsF,
+          item.ewsO,
+          item.scM,
+          item.scF,
+          item.scO,
+          item.stM,
+          item.stF,
+          item.stO,
+          item.obcM,
+          item.obcF,
+          item.obcO,
+          item.totalM,
+          item.totalF,
+          item.totalO
+        ]);
+      
+        doc.autoTable({
+          head: [columns],
+          body: rows,
+          theme: "striped"
+        });
+      
+        doc.save("slat.pdf");
+      };
+      
+
     return (
         <>
             <div>
@@ -265,101 +351,128 @@ export default function Report() {
                 )}
                 <div className="container">
                     {data.length > 0 && (
-                        <div
-                            className="table-responsive"
-                            style={{ maxHeight: "500px", overflow: "auto" }}
-                        >
-                            <table
-                                className="table table-bordered table-striped rounded"
-                                ref={tableRef}
+                        <>
+                            <div
+                                className="table-responsive mb-4"
+                                style={{ maxHeight: "500px", overflow: "auto" }}
                             >
-                                <thead>
-                                    <tr className="text-center">
-                                        {columns.map((col) => (
-                                            <th key={col}>{col}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.map((item) => (
-                                        <tr key={item.id}>
+                                <table
+                                    className="table table-bordered table-striped rounded"
+                                    ref={tableRef}
+                                >
+                                    <thead>
+                                        <tr className="text-center">
                                             {columns.map((col) => (
-                                                <td key={col}>{item[col]}</td>
+                                                <th key={col}>{col}</th>
                                             ))}
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item) => (
+                                            <tr key={item.id}>
+                                                {columns.map((col) => (
+                                                    <td key={col}>
+                                                        {item[col]}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <hr />
+                        </>
                     )}
-                    {
-                        <div
-                            className="table-responsive"
-                            style={{ maxHeight: "500px", overflow: "auto" }}
-                        >
-                            <table
-                                className="table table-bordered table-striped rounded"
-                                ref={tableRef}
+                    {slatData.length > 0 && (
+                        <>
+                            <div className="mb-3">
+                                <div className="row">
+                                    <h3 className="col">Generated Slat</h3>
+                                    <div className="col text-end">
+                                        <button
+                                            className="btn mx-3 btn-success"
+                                            onClick={handleSlatExcelDownload}
+                                        >
+                                            Download Excel
+                                        </button>
+                                        <button
+                                            className="btn  btn-success"
+                                            onClick={handleSlatPDFDownload}
+                                        >
+                                            Download PDF
+                                        </button>
+                                    </div>
+                                </div>
+                                <h5>Total records: {slatData.length}</h5>
+                            </div>
+                            <div
+                                className="table-responsive"
+                                style={{ maxHeight: "500px", overflow: "auto" }}
                             >
-                                <thead>
-                                    <tr className="text-center">
-                                        <td rowSpan={2}>Program</td>
-                                        <td colSpan={3}>General</td>
-                                        <td colSpan={3}>EWS</td>
-                                        <td colSpan={3}>SC</td>
-                                        <td colSpan={3}>ST</td>
-                                        <td colSpan={3}>OBC</td>
-                                        <td colSpan={3}>Total</td>
-                                    </tr>
-                                    <tr className="text-center">
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                        <td>M</td>
-                                        <td>F</td>
-                                        <td>O</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {slatData.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>{item.program}</td>
-                                            <td>{item.genM}</td>
-                                            <td>{item.genF}</td>
-                                            <td>{item.genO}</td>
-                                            <td>{item.ewsM}</td>
-                                            <td>{item.ewsF}</td>
-                                            <td>{item.ewsO}</td>
-                                            <td>{item.scM}</td>
-                                            <td>{item.scF}</td>
-                                            <td>{item.scO}</td>
-                                            <td>{item.stM}</td>
-                                            <td>{item.stF}</td>
-                                            <td>{item.stO}</td>
-                                            <td>{item.obcM}</td>
-                                            <td>{item.obcF}</td>
-                                            <td>{item.obcO}</td>
-                                            <td>{item.totalM}</td>
-                                            <td>{item.totalF}</td>
-                                            <td>{item.totalO}</td>
+                                <table
+                                    className="table table-bordered table-striped rounded"
+                                    ref={tableRef}
+                                >
+                                    <thead>
+                                        <tr className="text-center">
+                                            <td rowSpan={2}>Program</td>
+                                            <td colSpan={3}>General</td>
+                                            <td colSpan={3}>EWS</td>
+                                            <td colSpan={3}>SC</td>
+                                            <td colSpan={3}>ST</td>
+                                            <td colSpan={3}>OBC</td>
+                                            <td colSpan={3}>Total</td>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    }
+                                        <tr className="text-center">
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                            <td>M</td>
+                                            <td>F</td>
+                                            <td>O</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {slatData.map((item) => (
+                                            <tr key={item.id}>
+                                                <td>{item.program}</td>
+                                                <td>{item.genM}</td>
+                                                <td>{item.genF}</td>
+                                                <td>{item.genO}</td>
+                                                <td>{item.ewsM}</td>
+                                                <td>{item.ewsF}</td>
+                                                <td>{item.ewsO}</td>
+                                                <td>{item.scM}</td>
+                                                <td>{item.scF}</td>
+                                                <td>{item.scO}</td>
+                                                <td>{item.stM}</td>
+                                                <td>{item.stF}</td>
+                                                <td>{item.stO}</td>
+                                                <td>{item.obcM}</td>
+                                                <td>{item.obcF}</td>
+                                                <td>{item.obcO}</td>
+                                                <td>{item.totalM}</td>
+                                                <td>{item.totalF}</td>
+                                                <td>{item.totalO}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </>
