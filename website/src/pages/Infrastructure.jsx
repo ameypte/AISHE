@@ -1,7 +1,10 @@
-import React,{useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import firebaseConfig from "../components/config/firebaseConfig";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 export default function Infrastructure(props) {
     const [isPlayground, setIsPlayground] = useState(false);
@@ -19,13 +22,10 @@ export default function Infrastructure(props) {
     const [isComputerCenter, setIsComputerCenter] = useState(false);
     const [isCafeteria, setIsCafeteria] = useState(false);
     const [isGuestHouse, setIsGuestHouse] = useState(false);
-    const [isseparateRoomForGirls, setIsseparateRoomForGirls] =
-        useState(false);
-    const [isSolarPowerGeneration, setIsSolarPowerGeneration] =
-        useState(false);
+    const [isseparateRoomForGirls, setIsseparateRoomForGirls] = useState(false);
+    const [isSolarPowerGeneration, setIsSolarPowerGeneration] = useState(false);
     const [isConnectivityNKN, setIsConnectivityNKN] = useState(false);
-    const [isConnectivityNMEICT, setIsConnectivityNMEICT] =
-        useState(false);
+    const [isConnectivityNMEICT, setIsConnectivityNMEICT] = useState(false);
     const [
         isCampusIsDifferntlyAbledFriendly,
         setIsCampusIsDifferntlyAbledFriendly,
@@ -39,17 +39,13 @@ export default function Infrastructure(props) {
     const [isgrievanceRedressalMechanism, setIsgrievanceRedressalMechanism] =
         useState(false);
     const [isVigilanceCell, setIsVigilanceCell] = useState(false);
-    const [isEqualOpportunityCell, setIsEqualOpportunityCell] =
-        useState(false);
-    const [isSexualHarassmentCell, setIsSexualHarassmentCell] =
-        useState(false);
-    const [isCounselorsforStudent, setIsCounselorsforStudent] =
-        useState(false);
+    const [isEqualOpportunityCell, setIsEqualOpportunityCell] = useState(false);
+    const [isSexualHarassmentCell, setIsSexualHarassmentCell] = useState(false);
+    const [isCounselorsforStudent, setIsCounselorsforStudent] = useState(false);
     const [isClinic, setIsClinic] = useState(false);
     const [isSeparateToiletForGirl, setIsSeparateToiletForGirl] =
         useState(false);
-    const [isSkillDevelopmentCell, setIsSkillDevelopmentCell] =
-        useState(false);
+    const [isSkillDevelopmentCell, setIsSkillDevelopmentCell] = useState(false);
     const [isSelfDefenceClassesForFemales, setIsSelfDefenceClassesForFemales] =
         useState(false);
     const [message, setMessage] = useState("");
@@ -59,8 +55,6 @@ export default function Infrastructure(props) {
     const [drill, setDrill] = useState(false);
 
     useEffect(() => {
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
         const ref = db.ref("Infrastructure information");
         ref.on("value", (snapshot) => {
             const data = snapshot.val();
@@ -113,9 +107,8 @@ export default function Infrastructure(props) {
             setDrill(data.drill);
         });
     }, []);
-        
+
     const handelSave = () => {
-        const db = firebase.database();
         const data = {
             isPlayground,
             isAuditorium,
@@ -148,15 +141,28 @@ export default function Infrastructure(props) {
             isSeparateToiletForGirl,
             isSkillDevelopmentCell,
             isSelfDefenceClassesForFemales,
+            disaster,
+            traningProgram,
+            assessment,
+            drill,
         };
-        alert(JSON.stringify(data));
-        db.ref("Infrastructure information").push(data);
-
-        setMessage("Data Saved Successfully");
-        setTimeout(() => {
-            setMessage("");
-        }, 3000);
-        window.scrollTo(0, 0);
+        console.log(data);
+        db.ref("Infrastructure information")
+            .set(data)
+            .then(() => {
+                setMessage("Data Saved Successfully");
+                setTimeout(() => {
+                    setMessage("");
+                }, 3000);
+                window.scrollTo(0, 0);
+            })
+            .catch((err) => {
+                setMessage("Something went wrong");
+                setTimeout(() => {
+                    setMessage("");
+                }, 3000);
+                window.scrollTo(0, 0);
+            });
     };
 
     return (
@@ -197,10 +203,10 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
-                                            value=""
+                                            value={isPlayground}
                                             aria-label="..."
                                             checked={isPlayground}
                                         />
@@ -215,11 +221,12 @@ export default function Infrastructure(props) {
                                         }
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value={isAuditorium}
                                             aria-label="..."
+                                            checked={isAuditorium}
                                         />
                                     </td>
                                 </tr>
@@ -232,11 +239,12 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value={isTheatre}
                                             aria-label="..."
+                                            checked={isTheatre}
                                         />
                                     </td>
                                 </tr>
@@ -249,12 +257,13 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
                                             checked={isLibrary}
                                             aria-label="..."
+                                            onChange={() => {}}
                                         />
                                     </td>
                                 </tr>
@@ -308,7 +317,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -328,7 +337,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -346,7 +355,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -366,7 +375,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -386,7 +395,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -404,7 +413,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -424,7 +433,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -442,7 +451,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -460,7 +469,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -497,7 +506,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -517,7 +526,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -537,7 +546,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -557,7 +566,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -585,7 +594,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -613,7 +622,7 @@ export default function Infrastructure(props) {
                                                 }}
                                             >
                                                 <input
-                                                    class="form-check-input"
+                                                    className="form-check-input"
                                                     type="checkbox"
                                                     id=""
                                                     value=""
@@ -640,7 +649,7 @@ export default function Infrastructure(props) {
                                                 }}
                                             >
                                                 <input
-                                                    class="form-check-input"
+                                                    className="form-check-input"
                                                     type="checkbox"
                                                     id=""
                                                     value=""
@@ -667,7 +676,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -689,7 +698,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -709,7 +718,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -731,7 +740,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -751,7 +760,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -769,7 +778,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -791,7 +800,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -813,7 +822,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -835,7 +844,7 @@ export default function Infrastructure(props) {
                                         }}
                                     >
                                         <input
-                                            class="form-check-input"
+                                            className="form-check-input"
                                             type="checkbox"
                                             id=""
                                             value=""
@@ -858,7 +867,7 @@ export default function Infrastructure(props) {
                             : ""
                     }
                 >
-                    <table class="table table-borderless">
+                    <table className="table table-borderless">
                         <tbody>
                             <tr>
                                 <td className="" style={{ width: "10%" }}>
@@ -922,7 +931,9 @@ export default function Infrastructure(props) {
                                             name="B2"
                                             id="traningProgramYes"
                                             value="yes"
-                                            onChange={(e) => setTraningProgram(true)}
+                                            onChange={(e) =>
+                                                setTraningProgram(true)
+                                            }
                                             required
                                             checked={traningProgram}
                                         />
@@ -939,7 +950,9 @@ export default function Infrastructure(props) {
                                             type="radio"
                                             name="B2"
                                             id="traningProgramNo"
-                                            onChange={(e) => setTraningProgram(false)}
+                                            onChange={(e) =>
+                                                setTraningProgram(false)
+                                            }
                                             required
                                             value="no"
                                             checked={!traningProgram}
@@ -968,7 +981,9 @@ export default function Infrastructure(props) {
                                             type="radio"
                                             name="B3"
                                             id="assessmentYes"
-                                            onChange={(e) => setAssessment(true)}
+                                            onChange={(e) =>
+                                                setAssessment(true)
+                                            }
                                             value="yes"
                                             checked={assessment}
                                             required
@@ -985,7 +1000,9 @@ export default function Infrastructure(props) {
                                             className="form-check-input"
                                             type="radio"
                                             name="B3"
-                                            onChange={(e) => setAssessment(false)}
+                                            onChange={(e) =>
+                                                setAssessment(false)
+                                            }
                                             id="assessmentNo"
                                             required
                                             value="no"
@@ -1051,15 +1068,15 @@ export default function Infrastructure(props) {
                         </tbody>
                     </table>
                     <div className="text-end">
-                    {(!props.aisheReport) && (
-                        <button
-                            type="button"
-                            class="btn btn-outline-success px-4"
-                            onClick={handelSave}
-                        >
-                            Save
-                        </button>
-                    )}
+                        {!props.aisheReport && (
+                            <button
+                                type="button"
+                                className="btn btn-outline-success px-4"
+                                onClick={handelSave}
+                            >
+                                Save
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

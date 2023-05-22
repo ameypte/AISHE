@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 
 export default function Report() {
     const [message, setMessage] = useState(null);
-    const [gender, setGender] = useState(["Male", "Female", "Other"]);
+    const [gender, setGender] = useState(["All", "Male", "Female", "Other"]);
     const [isLoading, setIsLoading] = useState(false);
     const [category, setCategory] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("");

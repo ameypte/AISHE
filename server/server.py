@@ -73,9 +73,9 @@ def report():
         elif percentage == 'Below 60%':
             filtered_data = [
                 student for student in filtered_data if float(student.get('percentage')) < 60]
-        elif percentage == 'Above 75%': 
+        elif percentage == 'Above 75%':
             filtered_data = [
-                student for student in filtered_data if float(student.get('percentage')) > 75] 
+                student for student in filtered_data if float(student.get('percentage')) > 75]
         else:
             return jsonify({'message': 'Invalid percentage value'}), 400
         print(category)
@@ -88,6 +88,68 @@ def report():
         return jsonify(filtered_data)
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+    
+@app.route('/resultslat', methods=['GET'])
+def resultslate():
+    try:
+        # Design the slate method
+        ref = db.reference('Result information')
+        data = ref.get()
+
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+
+        # Calculate the required data for the slate
+        slate_data = []
+        program_data = {}
+        category_data = {
+            'General': {'M': 0, 'F': 0, 'O': 0},
+            'EWS': {'M': 0, 'F': 0, 'O': 0},
+            'SC': {'M': 0, 'F': 0, 'O': 0},
+            'ST': {'M': 0, 'F': 0, 'O': 0},
+            'OBC': {'M': 0, 'F': 0, 'O': 0},
+            'Total': {'M': 0, 'F': 0, 'O': 0}
+        }
+
+        for student in data:
+            program = student.get('program_char_code')
+            category = student.get('category')
+            gender = student.get('gender')
+
+            if program not in program_data:
+                program_data[program] = {
+                    'General': {'M': 0, 'F': 0, 'O': 0},
+                    'EWS': {'M': 0, 'F': 0, 'O': 0},
+                    'SC': {'M': 0, 'F': 0, 'O': 0},
+                    'ST': {'M': 0, 'F': 0, 'O': 0},
+                    'OBC': {'M': 0, 'F': 0, 'O': 0},
+                    'Total': {'M': 0, 'F': 0, 'O': 0}
+                }
+
+            program_data[program][category][gender] += 1
+            program_data[program]['Total'][gender] += 1
+            category_data[category][gender] += 1
+            category_data['Total'][gender] += 1
+
+        # Prepare the slate data
+        for program, categories in program_data.items():
+            row = {
+                'program': program,
+                **categories['General'],
+                **categories['EWS'],
+                **categories['SC'],
+                **categories['ST'],
+                **categories['OBC'],
+                **categories['Total']
+            }
+            slate_data.append(row)
+
+        # Return the slate data
+        return jsonify(slate_data)
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
+
 
 
 @app.route('/staffreport', methods=['POST'])
@@ -101,8 +163,17 @@ def staffreport():
         if data is None:
             return jsonify({'message': 'No data found'}), 404
 
-        filtered_data = [staff for staff in data if staff.get(
-            'Designation') == designation]
+        if designation == 'All':
+            return jsonify(data)
+        elif designation == 'All HOD':
+            filtered_data = [staff for staff in data if staff.get(
+                'Designation') if 'HOD' in staff.get('Designation')]
+        elif designation == 'All Lecturer':
+            filtered_data = [staff for staff in data if staff.get(
+                'Designation') if 'Lecturer' in staff.get('Designation')]
+        else:
+            filtered_data = [staff for staff in data if staff.get(
+                'Designation') == designation]
 
         if gender:
             new_filtered_data = [
@@ -120,7 +191,49 @@ def staffreport():
         print(e)
         return jsonify({'message': str(e)}), 500
 
+    
+@app.route('/staffslat', methods=['POST'])
+def staffslate():
+    try:
+        ref = db.reference('Staff information')
+        data = ref.get()
 
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+
+        # Count staff for each designation
+        designation_counts = {}
+        for staff in data:
+            designation = staff.get('Designation')
+            if designation in designation_counts:
+                designation_counts[designation] += 1
+            else:
+                designation_counts[designation] = 1
+
+        # Prepare the table rows
+        rows = []
+        sr_no = 1
+        for designation, count in designation_counts.items():
+            male_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') == 'Male')
+            female_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') == 'Female')
+            others_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') not in ['Male', 'Female'])
+
+            row = {
+                'Designation': designation,
+                'Total': count,
+                'Male': male_count,
+                'Female': female_count,
+                'Others': others_count
+            }
+            rows.append(row)
+            sr_no += 1
+
+        return jsonify(rows)
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
+
+    
 @app.route('/studentreport', methods=['POST'])
 def studentreport():
     try:
@@ -134,14 +247,17 @@ def studentreport():
             return jsonify({'message': 'No data found'}), 404
 
         if category == 'All':
-            return jsonify(data)
-
-        filtered_data = [student for student in data if student.get(
-            'Category') == category]
+            filtered_data = data
+        else:
+            filtered_data = [student for student in data if student.get(
+                'Category') == category]
 
         if gender:
-            new_filtered_data = [
-                student for student in filtered_data if student.get('Gender') == gender]
+            if gender == 'All':
+                new_filtered_data = filtered_data
+            else:
+                new_filtered_data = [
+                    student for student in filtered_data if student.get('Gender') == gender]
             if new_filtered_data:
                 return jsonify(new_filtered_data)
             else:
@@ -154,6 +270,8 @@ def studentreport():
     except Exception as e:
         print(e)
         return jsonify({'message': str(e)}), 500
+
+
 
 
 @app.route('/staff')

@@ -5,13 +5,20 @@ import "jspdf-autotable";
 
 export default function Report() {
     const [data, setData] = useState([]);
+    const [slatData, setSlatData] = useState([]);
     const tableRef = useRef(null);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
     const [message, setMessage] = useState(null);
     const [rowCount, setRowCount] = useState(0);
     const [selectedPercent, setSelectedPercent] = useState("All");
     const [selectedCsategory, setSelectedCategory] = useState("All");
-    const [category, setCategory] = useState(["All", "Open", "OBC", "SC", "ST"]);
+    const [category, setCategory] = useState([
+        "All",
+        "Open",
+        "OBC",
+        "SC",
+        "ST",
+    ]);
 
     const [progCharCodes, setProgCharCodes] = useState([
         "All",
@@ -24,13 +31,18 @@ export default function Report() {
         "EC",
         "EE",
     ]);
-    const [percent, setPercent] = useState(["All", "Above 60%", "Below 60%", "Above 75%"]);
+    const [percent, setPercent] = useState([
+        "All",
+        "Above 60%",
+        "Below 60%",
+        "Above 75%",
+    ]);
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedProgram, setSelectedProgram] = useState("All");
     const [student, setStudent] = useState("");
 
-    const handelGenerate = async (e) => {
+    const handleGenerate = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         const requestDate = {
@@ -83,6 +95,32 @@ export default function Report() {
         });
 
         doc.save("report.pdf");
+    };
+
+    const handleSlat = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch("http://localhost:5000/resultslat", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const responseData = await response.json();
+            if (responseData.message) {
+                setMessage(responseData.message);
+                return;
+            }
+            console.log(responseData);
+            setSlatData(responseData);
+            setRowCount(responseData.length);
+            setMessage("Report generated successfully");
+        } catch (error) {
+            setMessage("Error: " + error.message);
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -146,7 +184,9 @@ export default function Report() {
                             id="category"
                             value={selectedCsategory}
                             className="form-select"
-                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            onChange={(e) =>
+                                setSelectedCategory(e.target.value)
+                            }
                         >
                             {category.map((c) => (
                                 <option key={c} value={c}>
@@ -169,23 +209,36 @@ export default function Report() {
                         />
                     </div>
                     <div className="form-group mb-3 col-lg-4 d-flex align-items-end">
-                        {isLoading ? (
-                            <button className="btn btn-danger" disabled>
-                                <span
-                                    className="spinner-border spinner-border-sm me-1"
-                                    role="status"
-                                    aria-hidden="true"
-                                ></span>
-                                Generating...
-                            </button>
-                        ) : (
-                            <button
-                                className="btn btn-danger "
-                                onClickCapture={handelGenerate}
-                            >
-                                Generate
-                            </button>
+                    <button
+                        type="button"
+                        className="btn btn-success me-3 px-4"
+                        disabled={isLoading}
+                        onClick={handleSlat}
+                    >
+                        {isLoading && (
+                            <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                                aria-hidden="true"
+                            ></span>
                         )}
+                        Slat
+                    </button>
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        disabled={isLoading}
+                        onClick={handleGenerate}
+                    >
+                        {isLoading && (
+                            <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                                aria-hidden="true"
+                            ></span>
+                        )}
+                        Generate
+                    </button>
                     </div>
                 </form>
                 <hr />
@@ -240,6 +293,74 @@ export default function Report() {
                             </table>
                         </div>
                     )}
+                    {
+                        <div
+                            className="table-responsive"
+                            style={{ maxHeight: "500px", overflow: "auto" }}
+                        >
+                            <table
+                                className="table table-bordered table-striped rounded"
+                                ref={tableRef}
+                            >
+                                <thead>
+                                    <tr className="text-center">
+                                        <td rowSpan={2}>Program</td>
+                                        <td colSpan={3}>General</td>
+                                        <td colSpan={3}>EWS</td>
+                                        <td colSpan={3}>SC</td>
+                                        <td colSpan={3}>ST</td>
+                                        <td colSpan={3}>OBC</td>
+                                        <td colSpan={3}>Total</td>
+                                    </tr>
+                                    <tr className="text-center">
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                        <td>M</td>
+                                        <td>F</td>
+                                        <td>O</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {slatData.map((item) => (
+                                        <tr key={item.id}>
+                                            <td>{item.program}</td>
+                                            <td>{item.genM}</td>
+                                            <td>{item.genF}</td>
+                                            <td>{item.genO}</td>
+                                            <td>{item.ewsM}</td>
+                                            <td>{item.ewsF}</td>
+                                            <td>{item.ewsO}</td>
+                                            <td>{item.scM}</td>
+                                            <td>{item.scF}</td>
+                                            <td>{item.scO}</td>
+                                            <td>{item.stM}</td>
+                                            <td>{item.stF}</td>
+                                            <td>{item.stO}</td>
+                                            <td>{item.obcM}</td>
+                                            <td>{item.obcF}</td>
+                                            <td>{item.obcO}</td>
+                                            <td>{item.totalM}</td>
+                                            <td>{item.totalF}</td>
+                                            <td>{item.totalO}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         </>

@@ -14,6 +14,7 @@ import Departments from "./pages/Departments";
 import AisheReport from "./pages/Aishereport";
 import Infrastructure from "./pages/Infrastructure";
 import Frontpage from "./pages/Frontpage";
+import Rough from "./pages/Rough";
 
 
 const router = createBrowserRouter([
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
       <Infrastructure/>
     </Sidebar>
     )
+  },
+  {
+    path:"/rough",
+    element:<Rough/>
   }
 ]);
 

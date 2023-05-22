@@ -12,6 +12,7 @@ export default function Form() {
     const [result, setResult] = useState("");
     const [percentage, setPercentage] = useState("");
     const [message, setMessage] = useState("");
+    const [foundStudentKey, setFoundStudentKey] = useState("");
 
     const handelSubmit = (e) => {
         firebase.initializeApp(firebaseConfig);
@@ -27,6 +28,23 @@ export default function Form() {
             total_obtained: obtained,
             result: result,
         };
+        if (foundStudentKey) {
+            db.child(foundStudentKey)
+                .set(data)
+                .then((res) => {
+                    setName("");
+                    setRoll("");
+                    setProgram("");
+                    setTotal("");
+                    setObtained("");
+                    setResult("");
+                    setMessage("Data has been updated");
+                })
+                .catch((err) => {
+                    setMessage(err.message);
+                });
+            return;
+        }
 
         // Get the count of existing child nodes
         db.once("value", (snapshot) => {
@@ -47,6 +65,26 @@ export default function Form() {
                 .catch((err) => {
                     setMessage(err.message);
                 });
+        });
+    };
+
+    const rollChangeHandler = (e) => {
+        setRoll(e.target.value);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("Result information");
+        // if student already exist then load the data in the form
+        db.once("value", (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                if (childSnapshot.val().reg_no === e.target.value) {
+                    setFoundStudentKey(childSnapshot.key);
+                    setName(childSnapshot.val().Name);
+                    setProgram(childSnapshot.val().program_char_code);
+                    setTotal(childSnapshot.val().total_outof);
+                    setObtained(childSnapshot.val().total_obtained);
+                    setPercentage(childSnapshot.val().percentage);
+                    setResult(childSnapshot.val().result);
+                }
+            });
         });
     };
 
@@ -85,7 +123,7 @@ export default function Form() {
                         name="roll"
                         placeholder="Enter student roll number"
                         value={roll}
-                        onChange={(e) => setRoll(e.target.value)}
+                        onChange={rollChangeHandler}
                         required
                     />
                 </div>
