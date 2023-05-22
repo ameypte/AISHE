@@ -113,8 +113,7 @@ export default function Report() {
             }
             console.log(responseData);
             setSlatData(responseData);
-            setRowCount(responseData.length);
-            setMessage("Report generated successfully");
+            setMessage("Slate generated successfully");
         } catch (error) {
             setMessage("Error: " + error.message);
             console.log(error);
@@ -209,36 +208,36 @@ export default function Report() {
                         />
                     </div>
                     <div className="form-group mb-3 col-lg-4 d-flex align-items-end">
-                    <button
-                        type="button"
-                        className="btn btn-success me-3 px-4"
-                        disabled={isLoading}
-                        onClick={handleSlat}
-                    >
-                        {isLoading && (
-                            <span
-                                className="spinner-border spinner-border-sm me-1"
-                                role="status"
-                                aria-hidden="true"
-                            ></span>
-                        )}
-                        Slat
-                    </button>
-                    <button
-                        className="btn btn-danger"
-                        type="button"
-                        disabled={isLoading}
-                        onClick={handleGenerate}
-                    >
-                        {isLoading && (
-                            <span
-                                className="spinner-border spinner-border-sm me-1"
-                                role="status"
-                                aria-hidden="true"
-                            ></span>
-                        )}
-                        Generate
-                    </button>
+                        <button
+                            type="button"
+                            className="btn btn-success me-3 px-4"
+                            disabled={isLoading}
+                            onClick={handleSlat}
+                        >
+                            {isLoading && (
+                                <span
+                                    className="spinner-border spinner-border-sm me-1"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            )}
+                            Slat
+                        </button>
+                        <button
+                            className="btn btn-danger"
+                            type="button"
+                            disabled={isLoading}
+                            onClick={handleGenerate}
+                        >
+                            {isLoading && (
+                                <span
+                                    className="spinner-border spinner-border-sm me-1"
+                                    role="status"
+                                    aria-hidden="true"
+                                ></span>
+                            )}
+                            Generate
+                        </button>
                     </div>
                 </form>
                 <hr />

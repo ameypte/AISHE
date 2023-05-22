@@ -88,68 +88,105 @@ def report():
         return jsonify(filtered_data)
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-    
+
+
 @app.route('/resultslat', methods=['GET'])
 def resultslate():
     try:
-        # Design the slate method
         ref = db.reference('Result information')
         data = ref.get()
 
         if data is None:
             return jsonify({'message': 'No data found'}), 404
 
-        # Calculate the required data for the slate
-        slate_data = []
-        program_data = {}
-        category_data = {
-            'General': {'M': 0, 'F': 0, 'O': 0},
-            'EWS': {'M': 0, 'F': 0, 'O': 0},
-            'SC': {'M': 0, 'F': 0, 'O': 0},
-            'ST': {'M': 0, 'F': 0, 'O': 0},
-            'OBC': {'M': 0, 'F': 0, 'O': 0},
-            'Total': {'M': 0, 'F': 0, 'O': 0}
-        }
-
+        # Calculate the required statistics for the slate table
+        slate_data = {}
         for student in data:
-            program = student.get('program_char_code')
+            program_char_code = student.get('program_char_code')
             category = student.get('category')
             gender = student.get('gender')
 
-            if program not in program_data:
-                program_data[program] = {
-                    'General': {'M': 0, 'F': 0, 'O': 0},
-                    'EWS': {'M': 0, 'F': 0, 'O': 0},
-                    'SC': {'M': 0, 'F': 0, 'O': 0},
-                    'ST': {'M': 0, 'F': 0, 'O': 0},
-                    'OBC': {'M': 0, 'F': 0, 'O': 0},
-                    'Total': {'M': 0, 'F': 0, 'O': 0}
+            if program_char_code not in slate_data:
+                slate_data[program_char_code] = {
+                    'program': program_char_code,
+                    'genM': 0,
+                    'genF': 0,
+                    'genO': 0,
+                    'ewsM': 0,
+                    'ewsF': 0,
+                    'ewsO': 0,
+                    'scM': 0,
+                    'scF': 0,
+                    'scO': 0,
+                    'stM': 0,
+                    'stF': 0,
+                    'stO': 0,
+                    'obcM': 0,
+                    'obcF': 0,
+                    'obcO': 0,
+                    'totalM': 0,
+                    'totalF': 0,
+                    'totalO': 0
                 }
 
-            program_data[program][category][gender] += 1
-            program_data[program]['Total'][gender] += 1
-            category_data[category][gender] += 1
-            category_data['Total'][gender] += 1
+            if category == 'General':
+                if gender == 'Male':
+                    slate_data[program_char_code]['genM'] += 1
+                    slate_data[program_char_code]['totalM'] += 1
+                elif gender == 'Female':
+                    slate_data[program_char_code]['genF'] += 1
+                    slate_data[program_char_code]['totalF'] += 1
+                else:
+                    slate_data[program_char_code]['genO'] += 1
+                    slate_data[program_char_code]['totalO'] += 1
+            elif category == 'EWS':
+                if gender == 'Male':
+                    slate_data[program_char_code]['ewsM'] += 1
+                    slate_data[program_char_code]['totalM'] += 1
+                elif gender == 'Female':
+                    slate_data[program_char_code]['ewsF'] += 1
+                    slate_data[program_char_code]['totalF'] += 1
+                else:
+                    slate_data[program_char_code]['ewsO'] += 1
+                    slate_data[program_char_code]['totalO'] += 1
+            elif category == 'SC':
+                if gender == 'Male':
+                    slate_data[program_char_code]['scM'] += 1
+                    slate_data[program_char_code]['totalM'] += 1
+                elif gender == 'Female':
+                    slate_data[program_char_code]['scF'] += 1
+                    slate_data[program_char_code]['totalF'] += 1
+                else:
+                    slate_data[program_char_code]['scO'] += 1
+                    slate_data[program_char_code]['totalO'] += 1
+            elif category == 'ST':
+                if gender == 'Male':
+                    slate_data[program_char_code]['stM'] += 1
+                    slate_data[program_char_code]['totalM'] += 1
+                elif gender == 'Female':
+                    slate_data[program_char_code]['stF'] += 1
+                    slate_data[program_char_code]['totalF'] += 1
+                else:
+                    slate_data[program_char_code]['stO'] += 1
+                    slate_data[program_char_code]['totalO'] += 1
+            elif category == 'OBC':
+                if gender == 'Male':
+                    slate_data[program_char_code]['obcM'] += 1
+                    slate_data[program_char_code]['totalM'] += 1
+                elif gender == 'Female':
+                    slate_data[program_char_code]['obcF'] += 1
+                    slate_data[program_char_code]['totalF'] += 1
+                else:
+                    slate_data[program_char_code]['obcO'] += 1
+                    slate_data[program_char_code]['totalO'] += 1
 
-        # Prepare the slate data
-        for program, categories in program_data.items():
-            row = {
-                'program': program,
-                **categories['General'],
-                **categories['EWS'],
-                **categories['SC'],
-                **categories['ST'],
-                **categories['OBC'],
-                **categories['Total']
-            }
-            slate_data.append(row)
+        # Prepare the slate table data
+        slate_rows = list(slate_data.values())
 
-        # Return the slate data
-        return jsonify(slate_data)
+        return jsonify(slate_rows)
     except Exception as e:
         print(e)
         return jsonify({'message': str(e)}), 500
-
 
 
 @app.route('/staffreport', methods=['POST'])
@@ -191,7 +228,7 @@ def staffreport():
         print(e)
         return jsonify({'message': str(e)}), 500
 
-    
+
 @app.route('/staffslat', methods=['POST'])
 def staffslate():
     try:
@@ -214,9 +251,12 @@ def staffslate():
         rows = []
         sr_no = 1
         for designation, count in designation_counts.items():
-            male_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') == 'Male')
-            female_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') == 'Female')
-            others_count = sum(1 for staff in data if staff.get('Designation') == designation and staff.get('Gender') not in ['Male', 'Female'])
+            male_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') == 'Male')
+            female_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') == 'Female')
+            others_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') not in ['Male', 'Female'])
 
             row = {
                 'Designation': designation,
@@ -233,7 +273,7 @@ def staffslate():
         print(e)
         return jsonify({'message': str(e)}), 500
 
-    
+
 @app.route('/studentreport', methods=['POST'])
 def studentreport():
     try:
@@ -270,8 +310,6 @@ def studentreport():
     except Exception as e:
         print(e)
         return jsonify({'message': str(e)}), 500
-
-
 
 
 @app.route('/staff')
