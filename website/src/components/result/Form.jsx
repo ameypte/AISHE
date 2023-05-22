@@ -44,28 +44,9 @@ export default function Form() {
                     setMessage(err.message);
                 });
             return;
+        }else{
+            alert("Student is not present!")
         }
-
-        // Get the count of existing child nodes
-        db.once("value", (snapshot) => {
-            const count = snapshot.numChildren();
-
-            // Set the new data with a numeric key
-            db.child(count)
-                .set(data)
-                .then((res) => {
-                    setName("");
-                    setRoll("");
-                    setProgram("");
-                    setTotal("");
-                    setObtained("");
-                    setResult("");
-                    setMessage("Data has been submitted");
-                })
-                .catch((err) => {
-                    setMessage(err.message);
-                });
-        });
     };
 
     const rollChangeHandler = (e) => {
@@ -74,6 +55,7 @@ export default function Form() {
         const db = firebase.database().ref("Result information");
         // if student already exist then load the data in the form
         db.once("value", (snapshot) => {
+            setFoundStudentKey("");
             snapshot.forEach((childSnapshot) => {
                 if (childSnapshot.val().reg_no === e.target.value) {
                     setFoundStudentKey(childSnapshot.key);

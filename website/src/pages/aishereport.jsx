@@ -5,6 +5,7 @@ import Financials from "./Financials";
 import Table from "../components/Table";
 import Infrastructure from "./Infrastructure";
 import Frontpage from "./Frontpage";
+import Stats from "../components/Stats";
 
 export default function Aishereport() {
     const [staffData, setStaffData] = useState([]);
@@ -58,7 +59,7 @@ export default function Aishereport() {
             <div className="text-center">
                 <h2 className="mb-3">Result Information</h2>
             </div>
-            <Table data={resultData} />
+            <Stats/>
 
             <hr />
             <div className="text-center">

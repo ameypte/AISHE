@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 
 export default function Report() {
     const [message, setMessage] = useState(null);
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState("All");
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState([]);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
@@ -204,6 +204,19 @@ export default function Report() {
                                 Others
                             </label>
                         </div>
+                        <div className="form-check form-check-inline">
+                            <input
+                                className="form-check-input"
+                                type="radio"
+                                name="gender"
+                                id="all"
+                                onChange={(e) => setGender(e.target.value)}
+                                value="All"
+                            />
+                            <label className="form-check-label" htmlFor="all">
+                                All
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div className="form-group mb-3 col-lg-4 d-flex align-items-end">
@@ -220,7 +233,7 @@ export default function Report() {
                                 aria-hidden="true"
                             ></span>
                         )}
-                        Slat
+                        Stats
                     </button>
                     <button
                         className="btn btn-danger"
@@ -235,7 +248,7 @@ export default function Report() {
                                 aria-hidden="true"
                             ></span>
                         )}
-                        Generate
+                        All Lists
                     </button>
                 </div>
             </form>

@@ -13,6 +13,7 @@ export default function Report() {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedGender, setSelectedGender] = useState("");
     const [data, setData] = useState([]);
+    const [statsData, setStatsData] = useState([]);
     const columns = data.length > 0 ? Object.keys(data[0]) : [];
     const [rowCount, setRowCount] = useState(0);
 
@@ -68,6 +69,33 @@ export default function Report() {
         }
     };
 
+    const handleSlat = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await fetch("http://localhost:5000/resultslat", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const responseData = await response.json();
+            if (responseData.message) {
+                setMessage(responseData.message);
+                return;
+            }
+            console.log(responseData);
+            setStatsData(responseData);
+            setRowCount(responseData.length);
+            setMessage("Report generated successfully");
+        } catch (error) {
+            setMessage("Error: " + error.message);
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleExcelDownload = () => {
         const workbook = XLSX.utils.book_new();
         const sheet = XLSX.utils.json_to_sheet(data);
@@ -103,7 +131,7 @@ export default function Report() {
                     {message}
                 </div>
             )}
-            <form className="row" onSubmit={handelGenerate}>
+            <form className="row">
                 <div className="form-group mb-3 col-lg-4">
                     <label htmlFor="progChar" className="form-label">
                         Select Category
@@ -141,44 +169,60 @@ export default function Report() {
                     </select>
                 </div>
                 <div className="form-group mb-3 col-lg-4 d-flex align-items-end">
-                    {isLoading ? (
-                        <button className="btn btn-danger" disabled>
+                    <button
+                        type="button"
+                        className="btn btn-success me-3 px-4"
+                        disabled={isLoading}
+                        onClick={handleSlat}
+                    >
+                        {isLoading && (
                             <span
                                 className="spinner-border spinner-border-sm me-1"
                                 role="status"
                                 aria-hidden="true"
                             ></span>
-                            Generating...
-                        </button>
-                    ) : (
-                        <button type="submit" className="btn btn-danger">
-                            Generate
-                        </button>
-                    )}
+                        )}
+                        Stats
+                    </button>
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        disabled={isLoading}
+                        onClick={handelGenerate}
+                    >
+                        {isLoading && (
+                            <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                                aria-hidden="true"
+                            ></span>
+                        )}
+                        All Lists
+                    </button>
                 </div>
             </form>
             <hr />
             {data.length > 0 && (
-                    <div className="mb-3">
-                        <div className="row">
-                            <h3 className="col">Generated Report</h3>
-                            <div className="col text-end">
-                                <button
-                                    className="btn mx-3 btn-success"
-                                    onClick={handleExcelDownload}
-                                >
-                                    Download Excel
-                                </button>
-                                <button
-                                    className="btn  btn-success"
-                                    onClick={handlePDFDownload}
-                                >
-                                    Download PDF
-                                </button>
-                            </div>
+                <div className="mb-3">
+                    <div className="row">
+                        <h3 className="col">Generated Report</h3>
+                        <div className="col text-end">
+                            <button
+                                className="btn mx-3 btn-success"
+                                onClick={handleExcelDownload}
+                            >
+                                Download Excel
+                            </button>
+                            <button
+                                className="btn  btn-success"
+                                onClick={handlePDFDownload}
+                            >
+                                Download PDF
+                            </button>
                         </div>
-                        <h5>Total records: {rowCount}</h5>
                     </div>
+                    <h5>Total records: {rowCount}</h5>
+                </div>
             )}
             <div className="container">
                 {data.length > 0 && (
@@ -206,6 +250,71 @@ export default function Report() {
                         </table>
                     </div>
                 )}
+                {
+                    <div
+                        className="table-responsive"
+                        style={{ maxHeight: "500px", overflow: "auto" }}
+                    >
+                        <table className="table table-bordered table-striped rounded">
+                            <thead>
+                                <tr className="text-center">
+                                    <td rowSpan={2}>Program</td>
+                                    <td colSpan={3}>General</td>
+                                    <td colSpan={3}>EWS</td>
+                                    <td colSpan={3}>SC</td>
+                                    <td colSpan={3}>ST</td>
+                                    <td colSpan={3}>OBC</td>
+                                    <td colSpan={3}>Total</td>
+                                </tr>
+                                <tr className="text-center">
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                    <td>M</td>
+                                    <td>F</td>
+                                    <td>O</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {statsData.map((item) => (
+                                    <tr key={item.id}>
+                                        <td>{item.program}</td>
+                                        <td>{item.genM}</td>
+                                        <td>{item.genF}</td>
+                                        <td>{item.genO}</td>
+                                        <td>{item.ewsM}</td>
+                                        <td>{item.ewsF}</td>
+                                        <td>{item.ewsO}</td>
+                                        <td>{item.scM}</td>
+                                        <td>{item.scF}</td>
+                                        <td>{item.scO}</td>
+                                        <td>{item.stM}</td>
+                                        <td>{item.stF}</td>
+                                        <td>{item.stO}</td>
+                                        <td>{item.obcM}</td>
+                                        <td>{item.obcF}</td>
+                                        <td>{item.obcO}</td>
+                                        <td>{item.totalM}</td>
+                                        <td>{item.totalF}</td>
+                                        <td>{item.totalO}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
         </>
     );

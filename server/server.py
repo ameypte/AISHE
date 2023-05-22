@@ -201,7 +201,7 @@ def staffreport():
             return jsonify({'message': 'No data found'}), 404
 
         if designation == 'All':
-            return jsonify(data)
+            filtered_data = data
         elif designation == 'All HOD':
             filtered_data = [staff for staff in data if staff.get(
                 'Designation') if 'HOD' in staff.get('Designation')]
@@ -213,6 +213,8 @@ def staffreport():
                 'Designation') == designation]
 
         if gender:
+            if gender == "All":
+                return jsonify(filtered_data)
             new_filtered_data = [
                 staff for staff in filtered_data if staff.get("Gender") == gender]
             if new_filtered_data:
@@ -312,11 +314,108 @@ def studentreport():
         return jsonify({'message': str(e)}), 500
 
 
+@app.route('/studentstats', methods=['GET'])
+def studentstats():
+    try:
+        ref = db.reference('Student information')
+        data = ref.get()
+
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+
+        # Initialize statistics counters
+        stats = {
+            'genM': 0,
+            'genF': 0,
+            'genO': 0,
+            'ewsM': 0,
+            'ewsF': 0,
+            'ewsO': 0,
+            'scM': 0,
+            'scF': 0,
+            'scO': 0,
+            'stM': 0,
+            'stF': 0,
+            'stO': 0,
+            'obcM': 0,
+            'obcF': 0,
+            'obcO': 0,
+            'totalM': 0,
+            'totalF': 0,
+            'totalO': 0
+        }
+
+        # Iterate over students and update statistics
+        for student in data.values():
+            gender = student.get('Gender', '')
+            category = student.get('Category', '')
+
+            # Count based on gender and category
+            if gender == 'Male':
+                stats[category + 'M'] += 1
+            elif gender == 'Female':
+                stats[category + 'F'] += 1
+            else:
+                stats[category + 'O'] += 1
+
+            # Count total based on gender
+            if gender == 'Male':
+                stats['totalM'] += 1
+            elif gender == 'Female':
+                stats['totalF'] += 1
+            else:
+                stats['totalO'] += 1
+
+        return jsonify(stats)
+
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
+
+
 @app.route('/staff')
 def staff():
-    ref = db.reference('Staff information')
-    data = ref.get()
-    return jsonify(data)
+    try:
+        ref = db.reference('Staff information')
+        data = ref.get()
+
+        if data is None:
+            return jsonify({'message': 'No data found'}), 404
+
+        # Count staff for each designation
+        designation_counts = {}
+        for staff in data:
+            designation = staff.get('Designation')
+            if designation in designation_counts:
+                designation_counts[designation] += 1
+            else:
+                designation_counts[designation] = 1
+
+        # Prepare the table rows
+        rows = []
+        sr_no = 1
+        for designation, count in designation_counts.items():
+            male_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') == 'Male')
+            female_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') == 'Female')
+            others_count = sum(1 for staff in data if staff.get(
+                'Designation') == designation and staff.get('Gender') not in ['Male', 'Female'])
+
+            row = {
+                'Designation': designation,
+                'Total': count,
+                'Male': male_count,
+                'Female': female_count,
+                'Others': others_count
+            }
+            rows.append(row)
+            sr_no += 1
+
+        return jsonify(rows)
+    except Exception as e:
+        print(e)
+        return jsonify({'message': str(e)}), 500
 
 
 @app.route('/students')

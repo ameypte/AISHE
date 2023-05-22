@@ -176,6 +176,7 @@ export default function Report() {
           "Total F",
           "Total O"
         ];
+
         const rows = slatData.map(item => [
           item.program,
           item.genM,
@@ -204,7 +205,7 @@ export default function Report() {
           theme: "striped"
         });
       
-        doc.save("slat.pdf");
+        doc.save("stat.pdf");
       };
       
 
@@ -307,7 +308,7 @@ export default function Report() {
                                     aria-hidden="true"
                                 ></span>
                             )}
-                            Slat
+                            Stats
                         </button>
                         <button
                             className="btn btn-danger"
@@ -322,7 +323,7 @@ export default function Report() {
                                     aria-hidden="true"
                                 ></span>
                             )}
-                            Generate
+                            All Lists
                         </button>
                     </div>
                 </form>
