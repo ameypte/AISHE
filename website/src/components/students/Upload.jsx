@@ -21,7 +21,24 @@ export default function Upload() {
         }
     }, [studentData]);
 
-    const handelFileDownload = () => {};
+    const handelFileDownload = () => {
+        firebase.initializeApp(firebaseConfig);
+        const storageRef = firebase.storage().ref("student/");
+        const fileRef = storageRef.child("student-templet.xlsx");
+        fileRef.getDownloadURL().then((url) => {
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = "blob";
+            xhr.onload = (event) => {
+                const blob = xhr.response;
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "student-templet.xlsx";
+                link.click();
+            };
+            xhr.open("GET", url);
+            xhr.send();
+        });
+    };
 
     const handelFileUpload = (e) => {
         e.preventDefault();

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import HowThisWork from "../HowThisWork";
 import isLoggedIn from "../isLoggedIn";
+import firebaseConfig from "../config/firebaseConfig";
+import firebase from "firebase/compat/app";
+import "firebase/compat/storage";
+import "firebase/compat/database";
 
 export default function Upload() {
     const isUserLoggedIn = isLoggedIn();
@@ -16,7 +20,22 @@ export default function Upload() {
     }, []);
 
     const handelFileDownload = () => {
-        alert("Download file");
+        firebase.initializeApp(firebaseConfig);
+        const storageRef = firebase.storage().ref("result/");
+        const fileRef = storageRef.child("result-templet.xlsx");
+        fileRef.getDownloadURL().then((url) => {
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = "blob";
+            xhr.onload = (event) => {
+                const blob = xhr.response;
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "result-templet.xlsx";
+                link.click();
+            };
+            xhr.open("GET", url);
+            xhr.send();
+        });
     };
 
     const handelFileUpload = async (e) => {

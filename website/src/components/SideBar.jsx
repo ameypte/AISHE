@@ -82,7 +82,7 @@ export default function SideBar({ children }) {
     menuItems.splice(3, 4);
   }
 
-  if (localStorage.getItem("role") === "Examination Section") {
+  if (localStorage.getItem("role") === "Establishment Section") {
     menuItems.splice(1, 1);
     menuItems.splice(2, 3);
     menuItems.splice(3, 1);

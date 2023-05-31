@@ -5,13 +5,11 @@ export default function Stats() {
     const [statsData, setStatsData] = useState([]);
 
     useEffect(() => {
-        alert("hi");
         handleSlat();
     }, []);
 
     const handleSlat = async (e) => {
         e.preventDefault();
-        alert("hi");
         try {
             const response = await fetch("http://localhost:5000/resultslat", {
                 method: "GET",
